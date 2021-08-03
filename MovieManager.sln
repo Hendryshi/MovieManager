@@ -7,13 +7,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DCA80FE4-051
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6010E1CE-EDC1-48F9-8963-38822307ECCC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieManager.Core", "MovieManager.Core\MovieManager.Core.csproj", "{2868CBDD-0AE9-415F-88FE-86C33F8AB230}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieManager.Core", "src\MovieManager.Core\MovieManager.Core.csproj", "{2868CBDD-0AE9-415F-88FE-86C33F8AB230}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieManager.Infrastructure", "MovieManager.Infrastructure\MovieManager.Infrastructure.csproj", "{2C39175F-A9AA-4DC9-932F-84B83C288A44}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieManager.Infrastructure", "src\MovieManager.Infrastructure\MovieManager.Infrastructure.csproj", "{2C39175F-A9AA-4DC9-932F-84B83C288A44}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieManagerWeb", "MovieManagerWeb\MovieManagerWeb.csproj", "{5BA86BF5-8D4B-4259-9FD3-D817ED96132C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieManagerWeb", "src\MovieManagerWeb\MovieManagerWeb.csproj", "{5BA86BF5-8D4B-4259-9FD3-D817ED96132C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{52746991-A09B-4F2B-8224-82AE0E555226}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "tests\UnitTests\UnitTests.csproj", "{52746991-A09B-4F2B-8224-82AE0E555226}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
