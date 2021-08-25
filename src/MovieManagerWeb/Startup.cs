@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MovieManager.Core;
+using Serilog;
 
 namespace MovieManagerWeb
 {
@@ -52,6 +53,8 @@ namespace MovieManagerWeb
 				app.UseExceptionHandler("/Home/Error");
 			}
 			app.UseStaticFiles();
+
+			app.UseSerilogRequestLogging();
 
 			app.UseRouting();
 
