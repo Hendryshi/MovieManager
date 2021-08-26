@@ -10,7 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MovieManager.Core;
+using MovieManager.Infrastructure;
 using Serilog;
+
 
 namespace MovieManagerWeb
 {
@@ -35,10 +37,8 @@ namespace MovieManagerWeb
 
 			services.AddHangfireServer();
 
-			services.AddTransient<MovieManager.Infrastructure.Repositories.BaseRepository>();
-			services.AddSingleton<MovieManager.Core.Job.ITestJob, MovieManager.Core.Job.TestJob>();
-			
-
+			services.AddCoreInjection();
+			services.AddInfrastructureInjection();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,8 +73,9 @@ namespace MovieManagerWeb
 
 		public void ConfigureHangfireJob(IRecurringJobManager recurringJobManager, IServiceProvider serviceProvider)
 		{
-			BackgroundJob.Enqueue(() => Console.WriteLine("Hello Hangfire job !"));
-			recurringJobManager.AddOrUpdate("Run every minute", () => serviceProvider.GetService<MovieManager.Core.Job.ITestJob>().Run(), "* * * * * ");
+			//BackgroundJob.Enqueue(() => Console.WriteLine("Hello Hangfire job !"));
+			//recurringJobManager.AddOrUpdate("Run every minute", () => serviceProvider.GetService<MovieManager.Core.Job.ITestJob>().Run(), "* * * * * ");
+			BackgroundJob.Enqueue(() => serviceProvider.GetService<MovieManager.Core.Interfaces.IJavScrapeDailyJob>().Run());
 		}
 	}
 }
