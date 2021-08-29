@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MovieManager.Core\MovieManager.Core.csproj" />
+    <ProjectReference Include="..\MovieManager.Infrastructure\MovieManager.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

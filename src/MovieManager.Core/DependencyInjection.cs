@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using MovieManager.Core.Interfaces;
 
 namespace MovieManager.Core
 {
@@ -11,7 +12,8 @@ namespace MovieManager.Core
 	{
 		public static IServiceCollection AddCoreInjection(this IServiceCollection services)
 		{
-			services.AddSingleton<Interfaces.IJavScrapeDailyJob, Jobs.JavScrapeDailyJob>();
+			services.AddTransient<IJavScrapeDailyJob, Jobs.JavScrapeDailyJob>();
+			services.AddTransient<IMovieService, Services.MovieService>();
 			return services;
 		}
 	}

@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using MovieManager.Infrastructure.Repositories;
 using MovieManager.Core.Interfaces;
-using MovieManager.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,14 +10,14 @@ namespace MovieManager.Core.Jobs
 {
 	public class JavScrapeDailyJob : IJavScrapeDailyJob
 	{
-		private BaseRepository _baseRepository;
-		private readonly ILogger<JavScrapeDailyJob> _logger;
+		private readonly IAppLogger<JavScrapeDailyJob> _logger;
+		private readonly IMovieService _movieService;
 
-
-		public JavScrapeDailyJob(BaseRepository baseRepository, ILogger<JavScrapeDailyJob> logger)
+		public JavScrapeDailyJob(IAppLogger<JavScrapeDailyJob> logger, 
+			IMovieService movieService)
 		{
-			_baseRepository = baseRepository;
 			_logger = logger;
+			_movieService = movieService;
 		}
 
 		public void Run()

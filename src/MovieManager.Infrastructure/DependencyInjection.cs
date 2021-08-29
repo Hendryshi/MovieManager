@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using MovieManager.Core.Interfaces;
 
 namespace MovieManager.Infrastructure
 {
@@ -11,7 +12,9 @@ namespace MovieManager.Infrastructure
 	{
 		public static IServiceCollection AddInfrastructureInjection(this IServiceCollection services)
 		{
-			services.AddTransient<Repositories.BaseRepository>();
+			services.AddScoped<DbContext.DapperContext>();
+			services.AddScoped(typeof(IAppLogger<>), typeof(Logging.LoggerAdapter<>));
+			services.AddTransient<IMovieRepository, Repositories.MovieRepository>();
 			return services;
 		}
 	}
