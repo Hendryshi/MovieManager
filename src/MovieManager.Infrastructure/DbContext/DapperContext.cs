@@ -154,11 +154,11 @@ namespace MovieManager.Infrastructure.DbContext
 			}
 		}
 
-		public long InsertEntity(object entity)
+		public long InsertEntity<T>(T entity) where T : class
 		{
 			using(var conn = GetConnection())
 			{
-				return conn.Insert(entity);
+				return conn.Insert<T>(entity);
 			}
 		}
 
