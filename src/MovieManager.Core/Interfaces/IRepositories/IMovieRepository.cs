@@ -9,6 +9,8 @@ namespace MovieManager.Core.Interfaces
 {
 	public interface IMovieRepository
 	{
+		Movie FindById(int idMovie);
+		Movie FindByNumber(string movieNbr);
 		Movie Save(Movie movie);
 	}
 }

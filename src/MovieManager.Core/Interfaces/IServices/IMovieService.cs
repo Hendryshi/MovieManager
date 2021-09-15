@@ -9,6 +9,8 @@ namespace MovieManager.Core.Interfaces
 {
 	public interface IMovieService
 	{
+		Movie FindMovieById(int idMovie);
+		Movie FindMovieByNumber(string movieNbr);
 		Movie SaveMovie(Movie movie);
 	}
 }

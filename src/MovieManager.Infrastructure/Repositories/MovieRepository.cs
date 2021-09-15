@@ -25,10 +25,20 @@ namespace MovieManager.Infrastructure.Repositories
 			if(movie.IdMovie == 0)
 				movie.IdMovie = (int)db.InsertEntity(movie);
 			else if(!db.UpdateEntity(movie))
-				throw new Exception("Movie not found in DB");
+				throw new Exception($"Movie not found in DB: {movie.ToString()}");
 
 			return movie;
 		}
 
+		public Movie FindById(int idMovie)
+		{
+			return db.GetEntityById<Movie>(idMovie);
+		}
+
+		public Movie FindByNumber(string movieNbr)
+		{
+			var sql = @"SELECT * FROM J_Movie WHERE number = @number";
+			return db.QuerySingleOrDefault<Movie>(sql, new { number = movieNbr });
+		}
 	}
 }

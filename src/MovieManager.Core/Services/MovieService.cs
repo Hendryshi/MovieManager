@@ -25,5 +25,15 @@ namespace MovieManager.Core.Services
 			return _movieRepository.Save(movie);
 		}
 
+		public Movie FindMovieById(int idMovie)
+		{
+			return _movieRepository.FindById(idMovie);
+		}
+
+		public Movie FindMovieByNumber(string movieNbr)
+		{
+			return _movieRepository.FindByNumber(movieNbr);
+		}
+
 	}
 }

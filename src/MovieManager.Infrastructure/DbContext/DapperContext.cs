@@ -25,7 +25,7 @@ namespace MovieManager.Infrastructure.DbContext
 			connectionString = configuration.GetConnectionString("MovieManagerDB");
 		}
 
-		protected static string GetDescriptionFromAttribute(MemberInfo member)
+		public static string GetDescriptionFromAttribute(MemberInfo member)
 		{
 			if(member == null) return null;
 
@@ -33,7 +33,7 @@ namespace MovieManager.Infrastructure.DbContext
 			return (attrib?.Description ?? member.Name).ToLower();
 		}
 
-		protected void DoCustomMap<T>()
+		public void DoCustomMap<T>()
 		{
 			var map = new CustomPropertyTypeMap(typeof(T), (type, columnName)
 					=> type.GetProperties().FirstOrDefault(prop => GetDescriptionFromAttribute(prop) == columnName.ToLower()));
@@ -41,7 +41,7 @@ namespace MovieManager.Infrastructure.DbContext
 		}
 
 		#region async
-		protected async Task<T> QuerySingleOrDefaultAsync<T>(string sql, object param = null)
+		public async Task<T> QuerySingleOrDefaultAsync<T>(string sql, object param = null)
 		{
 			using(var conn = GetConnection())
 			{
@@ -49,7 +49,7 @@ namespace MovieManager.Infrastructure.DbContext
 			}
 		}
 
-		protected async Task<T> QuerySingleAsync<T>(string sql, object param = null)
+		public async Task<T> QuerySingleAsync<T>(string sql, object param = null)
 		{
 			using(var conn = GetConnection())
 			{
@@ -57,7 +57,7 @@ namespace MovieManager.Infrastructure.DbContext
 			}
 		}
 
-		protected async Task<T> QueryFirstAsync<T>(string sql, object param = null)
+		public async Task<T> QueryFirstAsync<T>(string sql, object param = null)
 		{
 			using(var conn = GetConnection())
 			{
@@ -65,7 +65,7 @@ namespace MovieManager.Infrastructure.DbContext
 			}
 		}
 
-		protected async Task<List<T>> QueryAsync<T>(string sql, object param = null)
+		public async Task<List<T>> QueryAsync<T>(string sql, object param = null)
 		{
 			using(var conn = GetConnection())
 			{
@@ -75,7 +75,7 @@ namespace MovieManager.Infrastructure.DbContext
 			}
 		}
 
-		protected async Task<int> ExecuteAsync(string sql, object param = null)
+		public async Task<int> ExecuteAsync(string sql, object param = null)
 		{
 			using(var conn = GetConnection())
 			{
@@ -83,7 +83,7 @@ namespace MovieManager.Infrastructure.DbContext
 			}
 		}
 
-		protected async Task QueryMultipleAsync(string sql, Action<SqlMapper.GridReader> map, object param = null)
+		public async Task QueryMultipleAsync(string sql, Action<SqlMapper.GridReader> map, object param = null)
 		{
 			using(var conn = GetConnection())
 			{
@@ -95,7 +95,7 @@ namespace MovieManager.Infrastructure.DbContext
 		#endregion
 
 		#region sync
-		protected T QuerySingleOrDefault<T>(string sql, object param = null)
+		public T QuerySingleOrDefault<T>(string sql, object param = null)
 		{
 			using(var conn = GetConnection())
 			{
@@ -104,7 +104,7 @@ namespace MovieManager.Infrastructure.DbContext
 			}
 		}
 
-		protected T QuerySingle<T>(string sql, object param = null)
+		public T QuerySingle<T>(string sql, object param = null)
 		{
 			using(var conn = GetConnection())
 			{
@@ -112,7 +112,7 @@ namespace MovieManager.Infrastructure.DbContext
 			}
 		}
 
-		protected List<T> Query<T>(string sql, object param = null)
+		public List<T> Query<T>(string sql, object param = null)
 		{
 			using(var conn = GetConnection())
 			{
@@ -122,7 +122,7 @@ namespace MovieManager.Infrastructure.DbContext
 			}
 		}
 
-		protected int Execute(string sql, object param = null)
+		public int Execute(string sql, object param = null)
 		{
 			using(var conn = GetConnection())
 			{
@@ -130,7 +130,7 @@ namespace MovieManager.Infrastructure.DbContext
 			}
 		}
 
-		protected void QueryMultiple(string sql, Action<SqlMapper.GridReader> map, object param = null)
+		public void QueryMultiple(string sql, Action<SqlMapper.GridReader> map, object param = null)
 		{
 			using(var conn = GetConnection())
 			{
@@ -139,7 +139,7 @@ namespace MovieManager.Infrastructure.DbContext
 			}
 		}
 
-		protected void BatchInsert(DataTable dt)
+		public void BatchInsert(DataTable dt)
 		{
 			using(SqlConnection conn = (SqlConnection)GetConnection())
 			{
@@ -162,11 +162,19 @@ namespace MovieManager.Infrastructure.DbContext
 			}
 		}
 
-		public bool UpdateEntity(object entity)
+		public bool UpdateEntity<T>(T entity) where T : class
 		{
 			using(var conn = GetConnection())
 			{
-				return conn.Update(entity);
+				return conn.Update<T>(entity);
+			}
+		}
+
+		public T GetEntityById<T>(int id) where T : class
+		{
+			using(var conn = GetConnection())
+			{
+				return conn.Get<T>(id);
 			}
 		}
 		#endregion
