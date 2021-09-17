@@ -21,10 +21,10 @@ namespace MovieManagerWeb
 	{
 		public Startup(IConfiguration configuration)
 		{
-			Configuration = configuration;
+			_config = configuration;
 		}
 
-		public IConfiguration Configuration { get; }
+		public IConfiguration _config { get; }
 
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
@@ -37,7 +37,7 @@ namespace MovieManagerWeb
 				.UseMemoryStorage());
 
 			services.AddHangfireServer();
-			services.AddInfrastructureInjection();
+			services.AddInfrastructureInjection(_config);
 			services.AddCoreInjection();
 		}
 

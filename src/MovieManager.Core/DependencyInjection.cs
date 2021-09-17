@@ -14,6 +14,7 @@ namespace MovieManager.Core
 		{
 			services.AddTransient<IJavScrapeDailyJob, Jobs.JavScrapeDailyJob>();
 			services.AddTransient<IMovieService, Services.MovieService>();
+			services.AddTransient<IJavScrapeService, Services.JavScrapeService>();
 			return services;
 		}
 	}
