@@ -1,7 +1,12 @@
-﻿namespace MovieManager.Core.Interfaces
+﻿using MovieManager.Core.Entities;
+using System.Collections.Generic;
+
+namespace MovieManager.Core.Interfaces
 {
 	public interface IJavScrapeService
 	{
-		int GetPageCount(string pageUrl);
+		int GetPageCount(UrlInfo urlInfo);
+		List<Movie> ScanPageList(UrlInfo urlInfo);
+		void ScrapeNewReleasedMovie();
 	}
 }

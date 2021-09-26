@@ -12,9 +12,13 @@ namespace MovieManager.Core
 	{
 		public static IServiceCollection AddCoreInjection(this IServiceCollection services)
 		{
-			services.AddTransient<IJavScrapeDailyJob, Jobs.JavScrapeDailyJob>();
 			services.AddTransient<IMovieService, Services.MovieService>();
+			services.AddTransient<IActorService, Services.ActorService>();
+			services.AddTransient<ICategoryService, Services.CategoryService>();
+			services.AddTransient<ICompanyService, Services.CompanyService>();
+			services.AddTransient<IDirectorService, Services.DirectorService>();
 			services.AddTransient<IJavScrapeService, Services.JavScrapeService>();
+			services.AddTransient<IJavScrapeDailyJob, Jobs.JavScrapeDailyJob>();
 			return services;
 		}
 	}

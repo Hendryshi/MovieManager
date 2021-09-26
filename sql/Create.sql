@@ -1,0 +1,76 @@
+CREATE TABLE J_Movie
+(	
+	idMovie int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	number NVARCHAR(20) NULL UNIQUE,
+	title NVARCHAR(300) NULL,
+	company NVARCHAR(1000) NULL,
+	director NVARCHAR(1000) NULL,
+	publisher NVARCHAR(1000) NULL,
+	category NVARCHAR(1000) NULL,
+	star NVARCHAR(4000) NULL,
+	dtRelease DATETIME NULL,
+	duration INT NULL,
+	dtUpdate DATETIME NULL,
+	pictureUrl NVARCHAR(1000) NULL,
+	url NVARCHAR(500) NULL,
+	idStatus INT NOT NULL,
+)
+
+CREATE TABLE J_MovieRelation
+(
+	idMovie int NOT NULL,
+	idTyRole smallint NOT NULL,
+	idRelation int NOT NULL,
+	CONSTRAINT FK_MovieRelation_IdMoive FOREIGN KEY (idMovie) REFERENCES J_Movie(idMovie),
+	CONSTRAINT PK_MovieRelation PRIMARY KEY (idMovie,idTyRole, idRelation)
+)
+
+CREATE TABLE J_Category
+(	
+	idCategory INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	name NVARCHAR(100) NULL,
+	url NVARCHAR(500) NULL,
+	description NVARCHAR(500) NULL,
+	favLevel SMALLINT NULL DEFAULT(0),
+	dtUpdate DATETIME NULL
+)
+
+CREATE TABLE J_Company
+(	
+	idCompany INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	name NVARCHAR(100) NULL,
+	url NVARCHAR(500) NULL,
+	description NVARCHAR(500) NULL,
+	favLevel SMALLINT NULL DEFAULT(0),
+	dtUpdate DATETIME NULL
+)
+
+CREATE TABLE J_Director
+(	
+	idDirector INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	name NVARCHAR(100) NULL,
+	url NVARCHAR(500) NULL,
+	description NVARCHAR(500) NULL,
+	favLevel SMALLINT NULL DEFAULT(0),
+	dtUpdate DATETIME NULL
+)
+
+CREATE TABLE J_Publisher
+(	
+	idPublisher INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	name NVARCHAR(100) NULL,
+	url NVARCHAR(500) NULL,
+	description NVARCHAR(500) NULL,
+	favLevel SMALLINT NULL DEFAULT(0),
+	dtUpdate DATETIME NULL
+)
+
+CREATE TABLE J_Actor
+(	
+	idActor INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	name NVARCHAR(100) NULL,
+	url NVARCHAR(500) NULL,
+	description NVARCHAR(500) NULL,
+	favLevel SMALLINT NULL DEFAULT(0),
+	dtUpdate DATETIME NULL
+)

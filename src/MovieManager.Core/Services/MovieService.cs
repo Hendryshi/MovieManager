@@ -11,10 +11,10 @@ namespace MovieManager.Core.Services
 {
 	public class MovieService : IMovieService
 	{
-		private readonly IMovieRepository _movieRepository;
+		private readonly IMovieRepo _movieRepository;
 		private readonly IAppLogger<MovieService> _logger;
 
-		public MovieService(IAppLogger<MovieService> logger, IMovieRepository movieRepository)
+		public MovieService(IAppLogger<MovieService> logger, IMovieRepo movieRepository)
 		{
 			_movieRepository = movieRepository;
 			_logger = logger;

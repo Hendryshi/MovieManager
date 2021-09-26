@@ -9,11 +9,10 @@ using Dapper.Contrib.Extensions;
 namespace MovieManager.Core.Entities
 {
 	[Table("J_Movie")]
-	public class Movie
+	public class Movie : BaseEntity
 	{
 		[Key]
 		public int IdMovie { get; set; }
-		
 		public string Number { get; set; }
 		public string Title { get; set; }
 		public string Company { get; set; }
@@ -27,5 +26,8 @@ namespace MovieManager.Core.Entities
 		public string PictureUrl { get; set; }
 		public string Url { get; set; }
 		public int IdStatus { get; set; }
+
+		[Computed]
+		public List<MovieRelation> MovieRelations { get; set; }
 	}
 }

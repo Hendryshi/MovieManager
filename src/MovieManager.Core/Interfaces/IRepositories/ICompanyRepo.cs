@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace MovieManager.Core.Interfaces
 {
-	public interface IMovieRepository
+	public interface ICompanyRepo
 	{
-		Movie FindById(int idMovie);
-		Movie FindByNumber(string movieNbr);
-		Movie Save(Movie movie);
+		Company FindById(int idCompany);
+		Company FindByName(string name, string url = "");
+		Company Save(Company company);
 	}
 }

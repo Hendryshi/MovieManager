@@ -8,21 +8,32 @@ namespace MovieManager.Core.Enumerations
 {
 	public class JavlibEnums
 	{
-		public enum EntryPoint : short
-		{
-            NewRelease = 1,
-            Category,
-            Actress,
-            Director,
-            Company,
-            Publisher,
-            BestRate,
-            MostWanted,
-            Update,
-            Rank,
-            Other,
-            Search,
-            Scan
-        }
+		
+	}
+
+    public enum JavlibEntryType : short
+    {
+        NewRelease = 1,
+        Category,
+        Actress,
+        Director,
+        Company,
+        Publisher,
+        BestRate,
+        MostWanted,
+        Update,
+        Rank,
+        Other,
+        Search,
+        Movie,
+        Scan
+    }
+
+    public enum JavlibFavLevel : short
+	{
+        NotInterest = 0,
+        DlTorrent,
+        DlMovie,
+        DlChineseSub
 	}
 }

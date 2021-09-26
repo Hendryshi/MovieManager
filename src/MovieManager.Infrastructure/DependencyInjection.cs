@@ -18,7 +18,12 @@ namespace MovieManager.Infrastructure
 			services.Configure<JavlibSettings>(_config.GetSection("CommonSettings"));
 			services.AddScoped<DbContext.DapperContext>();
 			services.AddScoped(typeof(IAppLogger<>), typeof(Logging.LoggerAdapter<>));
-			services.AddTransient<IMovieRepository, Repositories.MovieRepository>();
+			services.AddTransient<IHtmlService, Services.HtmlService>();
+			services.AddTransient<IMovieRepo, Repositories.MovieRepo>();
+			services.AddTransient<IActorRepo, Repositories.ActorRepo>();
+			services.AddTransient<ICategoryRepo, Repositories.CategoryRepo>();
+			services.AddTransient<ICompanyRepo, Repositories.CompanyRepo>();
+			services.AddTransient<IDirectorRepo, Repositories.DirectorRepo>();
 			return services;
 		}
 	}
