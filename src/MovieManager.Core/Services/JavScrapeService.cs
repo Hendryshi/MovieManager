@@ -18,13 +18,29 @@ namespace MovieManager.Core.Services
 		private readonly IAppLogger<JavScrapeService> _logger;
 		private readonly IMovieService _movieService;
 		private readonly IHtmlService _htmlService;
+		private readonly IActorService _actorService;
+		private readonly ICategoryService _categoryService;
+		private readonly ICompanyService _companyService;
+		private readonly IDirectorService _directorService;
+		private readonly IPublisherService _publisherService;
 
 		public JavScrapeService(IAppLogger<JavScrapeService> logger, IOptions<JavlibSettings> javlibSettings,
-			IMovieService movieService, IHtmlService htmlService)
+			IMovieService movieService, 
+			IActorService actorService,
+			ICategoryService categoryService,
+			ICompanyService companyService,
+			IDirectorService directorService,
+			IPublisherService publisherService,
+			IHtmlService htmlService)
 		{
 			_logger = logger;
 			_javlibSettings = javlibSettings.Value;
 			_movieService = movieService;
+			_actorService = actorService;
+			_categoryService = categoryService;
+			_companyService = companyService;
+			_directorService = directorService;
+			_publisherService = publisherService;
 			_htmlService = htmlService;
 		}
 
@@ -65,26 +81,13 @@ namespace MovieManager.Core.Services
 			if(htmlDocument != null)
 			{
 				var titlePath = "//h3[@class='post-title text']";
+				var titleNode = htmlDocument.DocumentNode.SelectSingleNode(titlePath).InnerText.Trim();
+				var number = titleNode.Substring(0, titleNode.IndexOf(" "));
+				var title = titleNode.Substring(titleNode.IndexOf(" ") + 1).ReplaceInvalidChar();
+
 				var picPath = "//img[@id='video_jacket_img']";
-
-				var dtReleasePath = "//div[@id='video_date']//td[@class='text']";
-				var lengthPath = "//div[@id='video_length']//span[@class='text']";
-
-				var dirPath = "//span[@class='director']//a";
-				var comPath = "//span[@class='maker']//a";
-				var pubPath = "//span[@class='label']//a";
-
-				var catPath = "//span[@class='genre']//a";
-				var starPath = "//span[@class='star']//a";
-
-				var titleNode = htmlDocument.DocumentNode.SelectSingleNode(titlePath);
-				var title = titleNode.InnerText.Trim();
-				var number = title.Substring(0, title.IndexOf(" "));
-				title = title.Substring(title.IndexOf(" ") + 1).ReplaceInvalidChar();
-				var picUrl = htmlDocument.DocumentNode.SelectSingleNode(picPath);
-
-				movie.PictureUrl = picUrl.Attributes["src"].Value;
-				movie.PictureUrl = movie.PictureUrl.StartsWith("http") ? movie.PictureUrl : "http:" + movie.PictureUrl;
+				var picUrl = htmlDocument.DocumentNode.SelectSingleNode(picPath).Attributes["src"].Value;
+				movie.PictureUrl = picUrl.StartsWith("http") ? picUrl : "http:" + picUrl;
 
 				if(movie.Title == null)
 					movie.Title = title;
@@ -92,6 +95,7 @@ namespace MovieManager.Core.Services
 				if(movie.Number == null)
 					movie.Number = number;
 
+				var dtReleasePath = "//div[@id='video_date']//td[@class='text']";
 				var release = htmlDocument.DocumentNode.SelectSingleNode(dtReleasePath);
 				DateTime rDate = DateTime.MinValue;
 				if(release != null && !string.IsNullOrEmpty(release.InnerText))
@@ -100,118 +104,67 @@ namespace MovieManager.Core.Services
 						movie.DtRelease = rDate;
 				}
 
+				var lengthPath = "//div[@id='video_length']//span[@class='text']";
 				var duration = htmlDocument.DocumentNode.SelectSingleNode(lengthPath);
 				if(duration != null && !string.IsNullOrEmpty(duration.InnerText))
-				{
 					movie.Duration = int.Parse(duration.InnerText.Trim());
-				}
+				
+				var actorPath = "//span[@class='star']//a";
+				movie.Actor = GenerateMovieRoles(htmlDocument, actorPath, movie, JavlibRoleType.Actor);
 
-				//var dirNode = htmlDocument.DocumentNode.SelectNodes(dirPath);
-				//if(dirNode != null)
-				//{
-				//	foreach(var dir in dirNode)
-				//	{
-				//		var name = dir.InnerHtml.Trim();
-				//		var url = dir.Attributes["href"].Value;
-				//		movie.Director += name + ",";
+				var dirPath = "//span[@class='director']//a";
+				movie.Director = GenerateMovieRoles(htmlDocument, dirPath, movie, JavlibRoleType.Director);
 
-				//		Director d = LoadDirector(name, url);
-				//		if(d == null)
-				//		{
-				//			Log.Information($"Found new Director: {name}");
-				//			d = new Director() { Name = name, Url = url, DtUpdate = DateTime.Now };
-				//			SaveDirector(d);
-				//		}
-				//		movie.MovieRelation.Add(new MovieRelation() { IdRelation = d.IdDirector, IdTyRole = (int)RoleType.Director });
-				//	}
-				//	movie.Director = movie.Director.Trim(',');
-				//}
+				var comPath = "//span[@class='maker']//a";
+				movie.Company = GenerateMovieRoles(htmlDocument, comPath, movie, JavlibRoleType.Company);
 
-				//var comNode = htmlDocument.DocumentNode.SelectNodes(comPath);
-				//if(comNode != null)
-				//{
-				//	foreach(var com in comNode)
-				//	{
-				//		var name = com.InnerHtml.Trim();
-				//		var url = com.Attributes["href"].Value;
-				//		movie.Company += name + ",";
+				var pubPath = "//span[@class='label']//a";
+				movie.Publisher = GenerateMovieRoles(htmlDocument, pubPath, movie, JavlibRoleType.Publisher);
 
-				//		Company d = LoadCompany(name, url);
-				//		if(d == null)
-				//		{
-				//			Log.Information($"Found new Company: {name}; Insert it into DB");
-				//			d = new Company() { Name = name, Url = url, DtUpdate = DateTime.Now };
-				//			SaveCompany(d);
-				//		}
-				//		movie.MovieRelation.Add(new MovieRelation() { IdRelation = d.IdCompany, IdTyRole = (int)RoleType.Company });
-				//	}
-				//	movie.Company = movie.Company.Trim(',');
-				//}
-
-				//var pubNode = htmlDocument.DocumentNode.SelectNodes(pubPath);
-				//if(pubNode != null)
-				//{
-				//	foreach(var pub in pubNode)
-				//	{
-				//		var name = pub.InnerHtml.Trim();
-				//		var url = pub.Attributes["href"].Value;
-				//		movie.Publisher += name + ",";
-
-				//		Publisher d = LoadPublisher(name, url);
-				//		if(d == null)
-				//		{
-				//			Log.Information($"Found new Publisher: {name}; Insert it into DB");
-				//			d = new Publisher() { Name = name, Url = url, DtUpdate = DateTime.Now };
-				//			SavePublisher(d);
-				//		}
-				//		movie.MovieRelation.Add(new MovieRelation() { IdRelation = d.IdPublisher, IdTyRole = (int)RoleType.Publisher });
-				//	}
-				//	movie.Publisher = movie.Publisher.Trim(',');
-				//}
-
-				//var catNodes = htmlDocument.DocumentNode.SelectNodes(catPath);
-				//if(catNodes != null)
-				//{
-				//	foreach(var cat in catNodes)
-				//	{
-				//		var name = cat.InnerHtml.Trim();
-				//		var url = cat.Attributes["href"].Value;
-				//		movie.Category += name + ",";
-
-				//		Category d = LoadCategory(name, url);
-				//		if(d == null)
-				//		{
-				//			Log.Information($"Found new Category: {name}; Insert it into DB");
-				//			d = new Category() { Name = name, Url = url, DtUpdate = DateTime.Now };
-				//			SaveCategory(d);
-				//		}
-				//		movie.MovieRelation.Add(new MovieRelation() { IdRelation = d.IdCategory, IdTyRole = (int)RoleType.Category });
-				//	}
-				//	movie.Category = movie.Category.Trim(',');
-				//}
-
-				//var starNodes = htmlDocument.DocumentNode.SelectNodes(starPath);
-				//if(starNodes != null)
-				//{
-				//	foreach(var star in starNodes)
-				//	{
-				//		var name = star.InnerHtml.Trim();
-				//		var url = star.Attributes["href"].Value;
-				//		movie.Star += name + ",";
-
-				//		Star d = LoadStar(name, url);
-				//		if(d == null)
-				//		{
-				//			Log.Information($"Found new Star: {name}; Insert it into DB");
-				//			d = new Star() { Name = name, Url = url, DtUpdate = DateTime.Now };
-				//			SaveStar(d);
-				//		}
-				//		movie.MovieRelation.Add(new MovieRelation() { IdRelation = d.idStar, IdTyRole = (int)RoleType.Star });
-				//	}
-				//	movie.Star = movie.Star.Trim(',');
-				//}
+				var catPath = "//span[@class='genre']//a";
+				movie.Category = GenerateMovieRoles(htmlDocument, catPath, movie, JavlibRoleType.Category);
 			}
 			//Update Movie status to scanned
+		}
+
+		private string GenerateMovieRoles(HtmlDocument htmlDocument, string rolePath, Movie movie, JavlibRoleType roleType)
+		{
+			var roleNodes = htmlDocument.DocumentNode.SelectNodes(rolePath);
+			string roleStr = string.Empty;
+			if(roleNodes != null)
+			{
+				foreach(var roleNode in roleNodes)
+				{
+					var name = roleNode.InnerHtml.Trim();
+					var url = roleNode.Attributes["href"].Value;
+					roleStr += name + ",";
+
+					switch(roleType)
+					{
+						case JavlibRoleType.Actor:
+							Actor actor = _actorService.FindActorByName(name, url) ?? _actorService.SaveActor(new Actor() { Name = name, Url = url });
+							movie.MovieRelations.Add(new MovieRelation() { IdRelation = actor.IdActor, IdTyRole = JavlibRoleType.Actor });
+							break;
+						case JavlibRoleType.Category:
+							Category category = _categoryService.FindCategoryByName(name, url) ?? _categoryService.SaveCategory(new Category() { Name = name, Url = url });
+							movie.MovieRelations.Add(new MovieRelation() { IdRelation = category.IdCategory, IdTyRole = JavlibRoleType.Category });
+							break;
+						case JavlibRoleType.Company:
+							Company company = _companyService.FinCompanyByName(name, url) ?? _companyService.SaveCompany(new Company() { Name = name, Url = url });
+							movie.MovieRelations.Add(new MovieRelation() { IdRelation = company.IdCompany, IdTyRole = JavlibRoleType.Company });
+							break;
+						case JavlibRoleType.Director:
+							Director director = _directorService.FindDirectorByName(name, url) ?? _directorService.SaveDirector(new Director() { Name = name, Url = url });
+							movie.MovieRelations.Add(new MovieRelation() { IdRelation = director.IdDirector, IdTyRole = JavlibRoleType.Director });
+							break;
+						case JavlibRoleType.Publisher:
+							Publisher publisher = _publisherService.FindPublisherByName(name, url) ?? _publisherService.SavePublisher(new Publisher() { Name = name, Url = url });
+							movie.MovieRelations.Add(new MovieRelation() { IdRelation = publisher.IdPublisher, IdTyRole = JavlibRoleType.Publisher });
+							break;
+					}
+				}
+			}
+			return roleStr.TrimEnd(',');
 		}
 
 		public int GetPageCount(UrlInfo urlInfo)

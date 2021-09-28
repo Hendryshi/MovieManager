@@ -32,7 +32,7 @@ namespace MovieManager.Infrastructure.Repositories
 				else if(!db.UpdateEntity(movie))
 					throw new Exception($"Movie not found in DB: {movie.ToString()}");
 
-				_movieRelationRepo.SaveAllRelations(movie.MovieRelations);
+				_movieRelationRepo.SaveAllRelations(movie.IdMovie, movie.MovieRelations);
 				trans.Complete();
 			}
 			return movie;

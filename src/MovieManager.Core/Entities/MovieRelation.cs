@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using Dapper.Contrib.Extensions;
+using MovieManager.Core.Enumerations;
 
 namespace MovieManager.Core.Entities
 {
@@ -12,7 +13,7 @@ namespace MovieManager.Core.Entities
 	public class MovieRelation : BaseEntity
 	{
 		public int IdMovie { get; set; }
-		public short IdTyRole { get; set; }
+		public JavlibRoleType IdTyRole { get; set; }
 		public int IdRelation { get; set; }
 
 	}

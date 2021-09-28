@@ -22,6 +22,11 @@ namespace UnitTests
 		private readonly LoggerAdapter<JavScrapeService> _logger;
 		private readonly HtmlService _htmlService;
 		private readonly MovieService _movieService;
+		private readonly CategoryService _categoryService;
+		private readonly CompanyService _companyService;
+		private readonly DirectorService _directorService;
+		private readonly ActorService _actorService;
+		private readonly PublisherService _publisherService;
 		private readonly JavScrapeService _javScrapeService;
 
 		public JavScrapeServiceTests(ITestOutputHelper output)
@@ -32,7 +37,13 @@ namespace UnitTests
 			_commonSettings = new CommonSettingBuilder().Build();
 			_htmlService = new HtmlService(null, _commonSettings);
 			_movieService = new MovieServiceBuilder().Build();
-			_javScrapeService = new JavScrapeService(_logger, _javlibSettings, _movieService, _htmlService);
+			_categoryService = new CategoryServiceBuilder().Build();
+			_companyService = new CompanyServiceBuilder().Build();
+			_directorService = new DirectorServiceBuilder().Build();
+			_actorService = new ActorServiceBuilder().Build();
+			_publisherService = new PublisherServiceBuilder().Build();
+			
+			_javScrapeService = new JavScrapeService(_logger, _javlibSettings, _movieService, _actorService, _categoryService, _companyService, _directorService, _publisherService, _htmlService);
 		}
 
 		[Fact]
@@ -61,12 +72,25 @@ namespace UnitTests
 			Assert.Equal(20, lstMovies.Count);
 		}
 
+		[Fact]
+		public void TestScanMovieDetails()
+		{
+			UrlInfo urlInfo = new UrlInfo() { EntryType = JavlibEntryType.Movie, ExactUrl = "?v=javme5zi4i" };
+			Movie movie = new Movie();
+
+			_javScrapeService.ScanMovieDetails(urlInfo, movie);
+			_output.WriteLine(movie.ToString());
+			_movieService.SaveMovie(movie);
+		}
+
 		//TODO: This should be placed in Functional Tests
 		[Fact]
 		public void TestScrapeNewReleasedMovie()
 		{
 			_javScrapeService.ScrapeNewReleasedMovie();
 		}
+
+
 
 	}
 }

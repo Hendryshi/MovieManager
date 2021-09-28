@@ -9,7 +9,7 @@ namespace MovieManager.Core.Interfaces
 {
 	public interface ICategoryService
 	{
-		Category FinCategoryByName(string name, string url = "");
+		Category FindCategoryByName(string name, string url = "");
 		Category FindCategoryById(int idCategory);
 		Category SaveCategory(Category category);
 	}

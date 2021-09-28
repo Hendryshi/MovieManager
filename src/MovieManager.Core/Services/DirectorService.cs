@@ -30,7 +30,7 @@ namespace MovieManager.Core.Services
 			return _directorRepo.FindById(idDirector);
 		}
 
-		public Director FinDirectorByName(string name, string url = "")
+		public Director FindDirectorByName(string name, string url = "")
 		{
 			return _directorRepo.FindByName(name, url);
 		}

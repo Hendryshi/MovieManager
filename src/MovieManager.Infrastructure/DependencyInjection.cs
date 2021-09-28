@@ -15,7 +15,7 @@ namespace MovieManager.Infrastructure
 		public static IServiceCollection AddInfrastructureInjection(this IServiceCollection services, IConfiguration _config)
 		{
 			services.Configure<JavlibSettings>(_config.GetSection("JavlibSettings"));
-			services.Configure<JavlibSettings>(_config.GetSection("CommonSettings"));
+			services.Configure<CommonSettings>(_config.GetSection("CommonSettings"));
 			services.AddScoped<DbContext.DapperContext>();
 			services.AddScoped(typeof(IAppLogger<>), typeof(Logging.LoggerAdapter<>));
 			services.AddTransient<IHtmlService, Services.HtmlService>();

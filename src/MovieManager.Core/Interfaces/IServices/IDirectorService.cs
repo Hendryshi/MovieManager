@@ -9,7 +9,7 @@ namespace MovieManager.Core.Interfaces
 {
 	public interface IDirectorService
 	{
-		Director FinDirectorByName(string name, string url = "");
+		Director FindDirectorByName(string name, string url = "");
 		Director FindDirectorById(int idDirector);
 		Director SaveDirector(Director director);
 	}

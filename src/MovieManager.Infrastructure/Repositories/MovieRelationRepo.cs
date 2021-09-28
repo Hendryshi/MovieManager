@@ -25,19 +25,19 @@ namespace MovieManager.Infrastructure.Repositories
 			return db.Query<MovieRelation>(sql, new { idMovie });
 		}
 
-		public void SaveAllRelations(List<MovieRelation> movieRelations)
+		public void SaveAllRelations(int idMovie, List<MovieRelation> movieRelations)
 		{
 			var sql = new StringBuilder();
 			sql.AppendLine($"MERGE INTO {Table} AS Target");
 			sql.AppendLine("USING(");
 			sql.AppendLine("	VALUES");
-			sql.AppendLine(string.Join(",", movieRelations.Select(mr => $"({mr.IdMovie}, {mr.IdTyRole}, {mr.IdRelation})")));
+			sql.AppendLine(string.Join(",", movieRelations.Select(mr => $"({idMovie}, {(short)mr.IdTyRole}, {mr.IdRelation})")));
 			sql.AppendLine(") AS Source(idMovie, idTyRole, idRelation)");
 			sql.AppendLine("ON Source.idMovie = Target.idMovie AND Source.idTyRole = Target.idTyRole AND Source.idRelation = Target.idRelation");
 			sql.AppendLine("WHEN NOT MATCHED");
 			sql.AppendLine("THEN INSERT (idMovie, idTyRole, idRelation)");
 			sql.AppendLine("VALUES (Source.idMovie, Source.idTyRole, Source.idRelation)");
-			sql.AppendLine("WHEN NOT MATCHED BY SOURCE");
+			sql.AppendLine($"WHEN NOT MATCHED BY SOURCE AND Target.idMovie = {idMovie}");
 			sql.AppendLine("THEN DELETE;");
 
 			db.Execute(sql.ToString());

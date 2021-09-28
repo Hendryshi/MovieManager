@@ -49,11 +49,11 @@ namespace UnitTests
 		public void TesFindCategoryByName()
 		{
 			string name = "CategoryTest";
-			var category = _categoryService.FinCategoryByName(name);
+			var category = _categoryService.FindCategoryByName(name);
 			Assert.Equal(name, category.Name);
 
 			string url = "urlfalse";
-			category = _categoryService.FinCategoryByName(name, url);
+			category = _categoryService.FindCategoryByName(name, url);
 			Assert.True(category == null);
 		}
 

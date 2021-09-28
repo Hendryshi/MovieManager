@@ -49,11 +49,11 @@ namespace UnitTests
 		public void TesFindPublisherByName()
 		{
 			string name = "PublisherTest";
-			var publisher = _publisherService.FinPublisherByName(name);
+			var publisher = _publisherService.FindPublisherByName(name);
 			Assert.Equal(name, publisher.Name);
 
 			string url = "urlfalse";
-			publisher = _publisherService.FinPublisherByName(name, url);
+			publisher = _publisherService.FindPublisherByName(name, url);
 			Assert.True(publisher == null);
 		}
 

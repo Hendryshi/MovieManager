@@ -9,7 +9,7 @@ namespace MovieManager.Core.Interfaces
 {
 	public interface IActorService
 	{
-		Actor FinActorByName(string name, string url = "");
+		Actor FindActorByName(string name, string url = "");
 		Actor FindActorById(int idActor);
 		Actor SaveActor(Actor actor);
 	}

@@ -30,7 +30,7 @@ namespace MovieManager.Core.Services
 			return _publisherRepo.FindById(idPublisher);
 		}
 
-		public Publisher FinPublisherByName(string name, string url = "")
+		public Publisher FindPublisherByName(string name, string url = "")
 		{
 			return _publisherRepo.FindByName(name, url);
 		}

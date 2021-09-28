@@ -49,11 +49,11 @@ namespace UnitTests
 		public void TesFindActorByName()
 		{
 			string name = "ActorTest";
-			var actor = _actorService.FinActorByName(name);
+			var actor = _actorService.FindActorByName(name);
 			Assert.Equal(name, actor.Name);
 
 			string url = "urlfalse";
-			actor = _actorService.FinActorByName(name, url);
+			actor = _actorService.FindActorByName(name, url);
 			Assert.True(actor == null);
 		}
 

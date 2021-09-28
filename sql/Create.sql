@@ -7,7 +7,7 @@ CREATE TABLE J_Movie
 	director NVARCHAR(1000) NULL,
 	publisher NVARCHAR(1000) NULL,
 	category NVARCHAR(1000) NULL,
-	star NVARCHAR(4000) NULL,
+	actor NVARCHAR(4000) NULL,
 	dtRelease DATETIME NULL,
 	duration INT NULL,
 	dtUpdate DATETIME NULL,

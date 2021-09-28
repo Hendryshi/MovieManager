@@ -49,11 +49,11 @@ namespace UnitTests
 		public void TesFindDirectorByName()
 		{
 			string name = "DirectorTest";
-			var director = _directorService.FinDirectorByName(name);
+			var director = _directorService.FindDirectorByName(name);
 			Assert.Equal(name, director.Name);
 
 			string url = "urlfalse";
-			director = _directorService.FinDirectorByName(name, url);
+			director = _directorService.FindDirectorByName(name, url);
 			Assert.True(director == null);
 		}
 

@@ -5,6 +5,7 @@ using UnitTests.Builders;
 using MovieManager.Core.Interfaces;
 using MovieManager.Core.Services;
 using MovieManager.Core.Entities;
+using MovieManager.Core.Enumerations;
 using MovieManager.Infrastructure.DbContext;
 using MovieManager.Infrastructure.Repositories;
 using Xunit.Abstractions;
@@ -27,7 +28,11 @@ namespace UnitTests
 		[Fact]
 		public void TestInsertMovie()	
 		{
-			var movie = new Movie() { Number = "CAWD-123", Category = "Cat1, Cat2" };
+			var movie = new Movie() { Number = "CAWD-1236", Category = "Cat1, Cat2" };
+			movie.MovieRelations =  new List<MovieRelation>() { 
+				new MovieRelation() { IdTyRole = JavlibRoleType.Director, IdRelation = 300 }, 
+				new MovieRelation() { IdTyRole = JavlibRoleType.Company, IdRelation = 300 } };
+
 			var movieInserted = _movieService.SaveMovie(movie);
 			Assert.True(movieInserted.IdMovie > 0);
 		}
@@ -60,15 +65,15 @@ namespace UnitTests
 		[Fact]
 		public void TestUpdateMovie()
 		{
-			int idMovie = 7;
+			int idMovie = 1488;
 			var movie = _movieService.FindMovieById(idMovie);
 
 			_output.WriteLine("Modified before: ");
 			movie.MovieRelations.ForEach(mr => _output.WriteLine(mr.ToString()));
 
 			movie.Title = "title modified";
-			movie.MovieRelations.Add(new MovieRelation() { IdMovie = idMovie, IdTyRole = 3, IdRelation = 300 });
-			movie.MovieRelations.RemoveAt(2);
+			movie.MovieRelations.Add(new MovieRelation() { IdMovie = idMovie, IdTyRole = JavlibRoleType.Director, IdRelation = 500 });
+			movie.MovieRelations.RemoveAt(1);
 
 			_movieService.SaveMovie(movie);
 			
@@ -82,7 +87,7 @@ namespace UnitTests
 		[Fact]
 		public void TestStringJoin()
 		{
-			List<MovieRelation> movieRelations = new List<MovieRelation>() { new MovieRelation() { IdMovie = 1, IdTyRole = 3, IdRelation = 300 }, new MovieRelation() { IdMovie = 3, IdTyRole = 3, IdRelation = 300 } };
+			List<MovieRelation> movieRelations = new List<MovieRelation>() { new MovieRelation() { IdMovie = 1, IdTyRole = JavlibRoleType.Director, IdRelation = 300 }, new MovieRelation() { IdMovie = 3, IdTyRole = JavlibRoleType.Director, IdRelation = 300 } };
 			_output.WriteLine(string.Join(",", movieRelations.Select(mr => $"({mr.IdMovie}, {mr.IdTyRole}, {mr.IdRelation})")));
 		}
 	}

@@ -30,7 +30,7 @@ namespace MovieManager.Core.Services
 			return _categoryRepo.FindById(idCategory);
 		}
 
-		public Category FinCategoryByName(string name, string url = "")
+		public Category FindCategoryByName(string name, string url = "")
 		{
 			return _categoryRepo.FindByName(name, url);
 		}

@@ -9,7 +9,7 @@ namespace MovieManager.Core.Interfaces
 {
 	public interface IPublisherService
 	{
-		Publisher FinPublisherByName(string name, string url = "");
+		Publisher FindPublisherByName(string name, string url = "");
 		Publisher FindPublisherById(int idPublisher);
 		Publisher SavePublisher(Publisher publisher);
 	}

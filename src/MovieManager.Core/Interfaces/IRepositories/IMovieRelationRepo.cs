@@ -10,6 +10,6 @@ namespace MovieManager.Core.Interfaces
 	public interface IMovieRelationRepo
 	{
 		List<MovieRelation> LoadAllRelations(int idMovie);
-		void SaveAllRelations(List<MovieRelation> movieRelations);
+		void SaveAllRelations(int idMovie, List<MovieRelation> movieRelations);
 	}
 }

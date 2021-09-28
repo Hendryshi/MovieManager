@@ -19,7 +19,7 @@ namespace MovieManager.Core.Entities
 		public string Director { get; set; }
 		public string Publisher { get; set; }
 		public string Category { get; set; }
-		public string Star { get; set; }
+		public string Actor { get; set; }
 		public DateTime? DtRelease { get; set; }
 		public int? Duration { get; set; }
 		public DateTime DtUpdate { get; set; }
@@ -28,6 +28,6 @@ namespace MovieManager.Core.Entities
 		public int IdStatus { get; set; }
 
 		[Computed]
-		public List<MovieRelation> MovieRelations { get; set; }
+		public List<MovieRelation> MovieRelations { get; set; } = new List<MovieRelation>();
 	}
 }
