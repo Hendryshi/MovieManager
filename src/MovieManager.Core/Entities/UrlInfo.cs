@@ -7,7 +7,7 @@ using MovieManager.Core.Enumerations;
 
 namespace MovieManager.Core.Entities
 {
-	public class UrlInfo
+	public class UrlInfo : BaseEntity
 	{
 		public JavlibEntryType EntryType { get; set; }
 		public int? Page { get; set; }

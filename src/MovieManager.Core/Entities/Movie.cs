@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using Dapper.Contrib.Extensions;
+using MovieManager.Core.Enumerations;
 
 namespace MovieManager.Core.Entities
 {
@@ -21,11 +22,16 @@ namespace MovieManager.Core.Entities
 		public string Category { get; set; }
 		public string Actor { get; set; }
 		public DateTime? DtRelease { get; set; }
+		public int? NbWant { get; set; }
+		public int? NbWatched { get; set; }
+		public int? NbOwned { get; set; }
 		public int? Duration { get; set; }
-		public DateTime DtUpdate { get; set; }
-		public string PictureUrl { get; set; }
+		public string ThumbnailUrl { get; set; }
+		public string CoverUrl { get; set; }
+		public JavlibFavLevel FavLevel { get; set; }
+		public MovieStatus IdStatus { get; set; }
 		public string Url { get; set; }
-		public int IdStatus { get; set; }
+		public DateTime DtUpdate { get; set; }
 
 		[Computed]
 		public List<MovieRelation> MovieRelations { get; set; } = new List<MovieRelation>();

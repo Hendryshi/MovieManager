@@ -6,11 +6,6 @@ using System.Threading.Tasks;
 
 namespace MovieManager.Core.Enumerations
 {
-	public class JavlibEnums
-	{
-
-	}
-
 	public enum JavlibEntryType : short
 	{
 		NewRelease = 1,

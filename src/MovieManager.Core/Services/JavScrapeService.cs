@@ -71,7 +71,7 @@ namespace MovieManager.Core.Services
 				}
 			}
 			else
-				_logger?.LogWarning("Nothing found when scraping new released movie. UrlInfo: {0}", urlInfo);
+				_logger?.LogWarning("Nothing found when scraping new released movie. UrlInfo: {0}", urlInfo.ToString());
 		}
 
 		public void ScanMovieDetails(UrlInfo urlInfo, Movie movie)
@@ -87,7 +87,7 @@ namespace MovieManager.Core.Services
 
 				var picPath = "//img[@id='video_jacket_img']";
 				var picUrl = htmlDocument.DocumentNode.SelectSingleNode(picPath).Attributes["src"].Value;
-				movie.PictureUrl = picUrl.StartsWith("http") ? picUrl : "http:" + picUrl;
+				movie.CoverUrl = picUrl.StartsWith("http") ? picUrl : "http:" + picUrl;
 
 				if(movie.Title == null)
 					movie.Title = title;
@@ -109,6 +109,15 @@ namespace MovieManager.Core.Services
 				if(duration != null && !string.IsNullOrEmpty(duration.InnerText))
 					movie.Duration = int.Parse(duration.InnerText.Trim());
 				
+				var nbWantPath = "//span[@id='subscribed']//a";
+				movie.NbWant = int.Parse(htmlDocument.DocumentNode.SelectSingleNode(nbWantPath).InnerText.Trim());
+
+				var nbWatchedPath = "//span[@id='watched']//a";
+				movie.NbWatched = int.Parse(htmlDocument.DocumentNode.SelectSingleNode(nbWatchedPath).InnerText.Trim());
+
+				var nbOwnedPath = "//span[@id='owned']//a";
+				movie.NbOwned = int.Parse(htmlDocument.DocumentNode.SelectSingleNode(nbOwnedPath).InnerText.Trim());
+
 				var actorPath = "//span[@class='star']//a";
 				movie.Actor = GenerateMovieRoles(htmlDocument, actorPath, movie, JavlibRoleType.Actor);
 
@@ -123,8 +132,11 @@ namespace MovieManager.Core.Services
 
 				var catPath = "//span[@class='genre']//a";
 				movie.Category = GenerateMovieRoles(htmlDocument, catPath, movie, JavlibRoleType.Category);
+
+				movie.IdStatus = MovieStatus.Scanned;
 			}
-			//Update Movie status to scanned
+			else
+				_logger?.LogWarning("Nothing found when scanning movie details. UrlInfo: {0}", urlInfo.ToString());
 		}
 
 		private string GenerateMovieRoles(HtmlDocument htmlDocument, string rolePath, Movie movie, JavlibRoleType roleType)
@@ -221,11 +233,13 @@ namespace MovieManager.Core.Services
 							if(urlAndTitle != null && urlAndTitle.ChildNodes.Count >= 3)
 							{
 								var number = urlAndTitle.ChildNodes[0].InnerText.Trim();
+								var thumbnail = urlAndTitle.ChildNodes[1].Attributes["src"].Value;
+								thumbnail = thumbnail.StartsWith("http") ? thumbnail : "http:" + thumbnail;
 								var name = urlAndTitle.ChildNodes[2].InnerText.Trim().ReplaceInvalidChar();
 								var avUrl = urlAndTitle.Attributes["href"].Value.Trim().Replace("./", "");
 
 								if(!string.IsNullOrEmpty(avUrl) && !string.IsNullOrEmpty(name) && !string.IsNullOrWhiteSpace(number))
-									lstMovie.Add(new Movie() { Number = number, Title = name, Url = avUrl });
+									lstMovie.Add(new Movie() { Number = number, Title = name, Url = avUrl, ThumbnailUrl = thumbnail });
 								else
 									_logger?.LogError($"Movie missing information important: id: [{number}] name [{name}] movieUrl [{avUrl}]");
 							}

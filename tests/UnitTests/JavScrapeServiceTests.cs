@@ -67,7 +67,7 @@ namespace UnitTests
 			List<Movie> lstMovies = _javScrapeService.ScanPageList(urlInfo);
 
 			foreach(Movie m in lstMovies)
-				_output.WriteLine(m.Number);
+				_output.WriteLine(m.ThumbnailUrl);
 
 			Assert.Equal(20, lstMovies.Count);
 		}
@@ -75,12 +75,12 @@ namespace UnitTests
 		[Fact]
 		public void TestScanMovieDetails()
 		{
-			UrlInfo urlInfo = new UrlInfo() { EntryType = JavlibEntryType.Movie, ExactUrl = "?v=javme5zi4i" };
+			UrlInfo urlInfo = new UrlInfo() { EntryType = JavlibEntryType.Movie, ExactUrl = "?v=javme5yc4ufdfdfd" };
 			Movie movie = new Movie();
 
 			_javScrapeService.ScanMovieDetails(urlInfo, movie);
 			_output.WriteLine(movie.ToString());
-			_movieService.SaveMovie(movie);
+			//_movieService.SaveMovie(movie);
 		}
 
 		//TODO: This should be placed in Functional Tests

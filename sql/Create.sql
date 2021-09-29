@@ -10,17 +10,22 @@ CREATE TABLE J_Movie
 	actor NVARCHAR(4000) NULL,
 	dtRelease DATETIME NULL,
 	duration INT NULL,
-	dtUpdate DATETIME NULL,
-	pictureUrl NVARCHAR(1000) NULL,
-	url NVARCHAR(500) NULL,
+	nbWant INT NULL,
+	nbWatched INT NULL,
+	nbOwned INT NULL,
+	thumbnailUrl NVARCHAR(1000) NULL,
+	coverUrl NVARCHAR(1000) NULL,
+	favLevel SMALLINT NULL DEFAULT(0),
 	idStatus INT NOT NULL,
+	url NVARCHAR(500) NULL,
+	dtUpdate DATETIME NULL,
 )
 
 CREATE TABLE J_MovieRelation
 (
-	idMovie int NOT NULL,
-	idTyRole smallint NOT NULL,
-	idRelation int NOT NULL,
+	idMovie INT NOT NULL,
+	idTyRole SMALLINT NOT NULL,
+	idRelation INT NOT NULL,
 	CONSTRAINT FK_MovieRelation_IdMoive FOREIGN KEY (idMovie) REFERENCES J_Movie(idMovie),
 	CONSTRAINT PK_MovieRelation PRIMARY KEY (idMovie,idTyRole, idRelation)
 )
