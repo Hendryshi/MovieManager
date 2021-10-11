@@ -14,12 +14,12 @@ using MovieManager.Core.Enumerations;
 
 namespace UnitTests
 {
-	public class CompanyServiceTest
+	public class CompanyServiceTests
 	{
 		private readonly ITestOutputHelper _output;
 		private CompanyService _companyService;
 		
-		public CompanyServiceTest(ITestOutputHelper output)
+		public CompanyServiceTests(ITestOutputHelper output)
 		{
 			_output = output;
 			_companyService = new CompanyServiceBuilder().Build();

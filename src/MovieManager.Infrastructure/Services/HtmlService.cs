@@ -25,23 +25,40 @@ namespace MovieManager.Infrastructure.Services
 
 		public async Task<HtmlDocument> GetHtmlDocumentAsync(string requestUrl, Dictionary<string, string> headers = null)
 		{
+			int retry = 0;
+			int maxRetry = 2;
 			HtmlDocument doc = null;
-			using(HttpClient client = new())
-			{
-				client.DefaultRequestHeaders.Add("User-Agent", _commonSettings.DefaultUserAgent);
-				if(headers != null)
-				{
-					foreach(var item in headers)
-						client.DefaultRequestHeaders.Add(item.Key, item.Value);
-				}
-				var html = await client.GetStringAsync(requestUrl);
 
-				if(!string.IsNullOrWhiteSpace(html))
+			while(retry <= maxRetry && doc == null)
+			{
+				try
 				{
-					doc = new HtmlDocument();
-					doc.LoadHtml(html);
+					using(HttpClient client = new())
+					{
+						client.DefaultRequestHeaders.Add("User-Agent", _commonSettings.DefaultUserAgent);
+						if(headers != null)
+						{
+							foreach(var item in headers)
+								client.DefaultRequestHeaders.Add(item.Key, item.Value);
+						}
+						var html = await client.GetStringAsync(requestUrl);
+
+						if(!string.IsNullOrWhiteSpace(html))
+						{
+							doc = new HtmlDocument();
+							doc.LoadHtml(html);
+						}
+					}
+				}
+				catch(Exception ex)
+				{
+					_logger?.LogError(ex, $"Error when requesting page: {requestUrl}");
+					retry++;
+					if(retry <= maxRetry)
+						_logger?.LogInformation($"Retrying {retry}/{maxRetry} times");
 				}
 			}
+
 			return doc;
 		}
 	}

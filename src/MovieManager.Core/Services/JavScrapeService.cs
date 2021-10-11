@@ -47,12 +47,13 @@ namespace MovieManager.Core.Services
 		//TODO: Create a new object Report and insert it into DB
 		public void ScrapeNewReleasedMovie()
 		{
+			_logger?.LogInformation("Start Scraping New Released Movies");
 			UrlInfo urlInfo = new UrlInfo() { EntryType = JavlibEntryType.NewRelease };
 			int pageCount = GetPageCount(urlInfo);
 
 			if(pageCount > 0)
 			{
-				_logger?.LogInformation($"Found {pageCount} pages. Now scanning movie on each page");
+				_logger?.LogInformation($"Found {pageCount} pages. Now scanning movies on each page");
 				for(int currentPage = 1; currentPage <= pageCount; currentPage++)
 				{
 					List<Movie> lstMovieCurrentPage = ScanPageList(new UrlInfo { EntryType = JavlibEntryType.NewRelease, Page = currentPage }).GroupBy(x => x.Url).Select(x => x.First()).ToList();
@@ -61,11 +62,8 @@ namespace MovieManager.Core.Services
 						_logger?.LogInformation("Treating {pageCount} movies in page {currentPage}", lstMovieCurrentPage.Count, currentPage);
 						foreach(Movie movie in lstMovieCurrentPage)
 						{
-							if(_movieService.FindMovieByNumber(movie.Number) == null)
-							{
-								ScanMovieDetails(new UrlInfo() { EntryType = JavlibEntryType.Movie, ExactUrl = movie.Url }, movie);
-								_movieService.SaveMovie(movie);
-							}
+							ScanMovieDetails(new UrlInfo() { EntryType = JavlibEntryType.Movie, ExactUrl = movie.Url }, movie);
+							_movieService.UpdateStatus(movie, MovieStatus.Scanned);
 						}
 					}
 				}
@@ -76,67 +74,87 @@ namespace MovieManager.Core.Services
 
 		public void ScanMovieDetails(UrlInfo urlInfo, Movie movie)
 		{
-			string requestUrl = GetJavLibraryUrl(urlInfo);
-			HtmlDocument htmlDocument = TryGetHtmlDocument(requestUrl);
-			if(htmlDocument != null)
+			try
 			{
-				var titlePath = "//h3[@class='post-title text']";
-				var titleNode = htmlDocument.DocumentNode.SelectSingleNode(titlePath).InnerText.Trim();
-				var number = titleNode.Substring(0, titleNode.IndexOf(" "));
-				var title = titleNode.Substring(titleNode.IndexOf(" ") + 1).ReplaceInvalidChar();
-
-				var picPath = "//img[@id='video_jacket_img']";
-				var picUrl = htmlDocument.DocumentNode.SelectSingleNode(picPath).Attributes["src"].Value;
-				movie.CoverUrl = picUrl.StartsWith("http") ? picUrl : "http:" + picUrl;
-
-				if(movie.Title == null)
-					movie.Title = title;
-
-				if(movie.Number == null)
-					movie.Number = number;
-
-				var dtReleasePath = "//div[@id='video_date']//td[@class='text']";
-				var release = htmlDocument.DocumentNode.SelectSingleNode(dtReleasePath);
-				DateTime rDate = DateTime.MinValue;
-				if(release != null && !string.IsNullOrEmpty(release.InnerText))
+				string requestUrl = GetJavLibraryUrl(urlInfo);
+				HtmlDocument htmlDocument = TryGetHtmlDocument(requestUrl);
+				if(htmlDocument != null)
 				{
-					if(DateTime.TryParse(release.InnerText.Trim(), out rDate))
-						movie.DtRelease = rDate;
+					if(movie.IdMovie == 0)
+					{
+						var titlePath = "//h3[@class='post-title text']";
+						var titleNode = htmlDocument.DocumentNode.SelectSingleNode(titlePath).InnerText.Trim();
+						var number = titleNode.Substring(0, titleNode.IndexOf(" "));
+						var title = titleNode.Substring(titleNode.IndexOf(" ") + 1).ReplaceInvalidChar();
+
+						var picPath = "//img[@id='video_jacket_img']";
+						var picUrl = htmlDocument.DocumentNode.SelectSingleNode(picPath).Attributes["src"].Value;
+						movie.CoverUrl = picUrl.StartsWith("http") ? picUrl : "http:" + picUrl;
+
+						if(movie.Title == null)
+							movie.Title = title;
+
+						if(movie.Number == null)
+							movie.Number = number;
+
+						var dtReleasePath = "//div[@id='video_date']//td[@class='text']";
+						var release = htmlDocument.DocumentNode.SelectSingleNode(dtReleasePath);
+						DateTime rDate = DateTime.MinValue;
+						if(release != null && !string.IsNullOrEmpty(release.InnerText))
+						{
+							if(DateTime.TryParse(release.InnerText.Trim(), out rDate))
+								movie.DtRelease = rDate;
+						}
+
+						var lengthPath = "//div[@id='video_length']//span[@class='text']";
+						var duration = htmlDocument.DocumentNode.SelectSingleNode(lengthPath);
+						if(duration != null && !string.IsNullOrEmpty(duration.InnerText))
+							movie.Duration = int.Parse(duration.InnerText.Trim());
+
+						var actorPath = "//span[@class='star']//a";
+						movie.Actor = GenerateMovieRoles(htmlDocument, actorPath, movie, JavlibRoleType.Actor);
+
+						var dirPath = "//span[@class='director']//a";
+						movie.Director = GenerateMovieRoles(htmlDocument, dirPath, movie, JavlibRoleType.Director);
+
+						var comPath = "//span[@class='maker']//a";
+						movie.Company = GenerateMovieRoles(htmlDocument, comPath, movie, JavlibRoleType.Company);
+
+						var pubPath = "//span[@class='label']//a";
+						movie.Publisher = GenerateMovieRoles(htmlDocument, pubPath, movie, JavlibRoleType.Publisher);
+
+						var catPath = "//span[@class='genre']//a";
+						movie.Category = GenerateMovieRoles(htmlDocument, catPath, movie, JavlibRoleType.Category);
+					}
+
+					var nbWantPath = "//span[@id='subscribed']//a";
+					movie.NbWant = int.Parse(htmlDocument.DocumentNode.SelectSingleNode(nbWantPath).InnerText.Trim());
+
+					var nbWatchedPath = "//span[@id='watched']//a";
+					movie.NbWatched = int.Parse(htmlDocument.DocumentNode.SelectSingleNode(nbWatchedPath).InnerText.Trim());
+
+					var nbOwnedPath = "//span[@id='owned']//a";
+					movie.NbOwned = int.Parse(htmlDocument.DocumentNode.SelectSingleNode(nbOwnedPath).InnerText.Trim());
+
+					int? wantLevel = movie.NbWant + movie.NbWatched + movie.NbOwned;
+					if(wantLevel.HasValue)
+					{
+						if(wantLevel.Value >= 1500)
+							movie.FavLevel = JavlibFavLevel.DlChineseSub;
+						else if(wantLevel.Value >= 1000)
+							movie.FavLevel = JavlibFavLevel.DlMovie;
+						else if(wantLevel.Value >= 500)
+							movie.FavLevel = JavlibFavLevel.DlTorrent;
+					}
+
 				}
-
-				var lengthPath = "//div[@id='video_length']//span[@class='text']";
-				var duration = htmlDocument.DocumentNode.SelectSingleNode(lengthPath);
-				if(duration != null && !string.IsNullOrEmpty(duration.InnerText))
-					movie.Duration = int.Parse(duration.InnerText.Trim());
-				
-				var nbWantPath = "//span[@id='subscribed']//a";
-				movie.NbWant = int.Parse(htmlDocument.DocumentNode.SelectSingleNode(nbWantPath).InnerText.Trim());
-
-				var nbWatchedPath = "//span[@id='watched']//a";
-				movie.NbWatched = int.Parse(htmlDocument.DocumentNode.SelectSingleNode(nbWatchedPath).InnerText.Trim());
-
-				var nbOwnedPath = "//span[@id='owned']//a";
-				movie.NbOwned = int.Parse(htmlDocument.DocumentNode.SelectSingleNode(nbOwnedPath).InnerText.Trim());
-
-				var actorPath = "//span[@class='star']//a";
-				movie.Actor = GenerateMovieRoles(htmlDocument, actorPath, movie, JavlibRoleType.Actor);
-
-				var dirPath = "//span[@class='director']//a";
-				movie.Director = GenerateMovieRoles(htmlDocument, dirPath, movie, JavlibRoleType.Director);
-
-				var comPath = "//span[@class='maker']//a";
-				movie.Company = GenerateMovieRoles(htmlDocument, comPath, movie, JavlibRoleType.Company);
-
-				var pubPath = "//span[@class='label']//a";
-				movie.Publisher = GenerateMovieRoles(htmlDocument, pubPath, movie, JavlibRoleType.Publisher);
-
-				var catPath = "//span[@class='genre']//a";
-				movie.Category = GenerateMovieRoles(htmlDocument, catPath, movie, JavlibRoleType.Category);
-
-				movie.IdStatus = MovieStatus.Scanned;
+				else
+					_logger?.LogWarning("Nothing found when scanning movie details. UrlInfo: {urlInfo}", urlInfo.ToString());
 			}
-			else
-				_logger?.LogWarning("Nothing found when scanning movie details. UrlInfo: {0}", urlInfo.ToString());
+			catch(Exception ex)
+			{
+				_logger?.LogError(ex, "Error occurred when scanning movie {movieNumber} details: {urlInfo}", movie.Number, urlInfo.ToString());
+			}
 		}
 
 		private string GenerateMovieRoles(HtmlDocument htmlDocument, string rolePath, Movie movie, JavlibRoleType roleType)
@@ -239,7 +257,10 @@ namespace MovieManager.Core.Services
 								var avUrl = urlAndTitle.Attributes["href"].Value.Trim().Replace("./", "");
 
 								if(!string.IsNullOrEmpty(avUrl) && !string.IsNullOrEmpty(name) && !string.IsNullOrWhiteSpace(number))
-									lstMovie.Add(new Movie() { Number = number, Title = name, Url = avUrl, ThumbnailUrl = thumbnail });
+								{
+									Movie movie = _movieService.FindMovieByNumber(number) ?? new Movie() { Number = number, Title = name, Url = avUrl, ThumbnailUrl = thumbnail };
+									lstMovie.Add(movie);
+								}
 								else
 									_logger?.LogError($"Movie missing information important: id: [{number}] name [{name}] movieUrl [{avUrl}]");
 							}
@@ -277,31 +298,12 @@ namespace MovieManager.Core.Services
 
 		private HtmlDocument TryGetHtmlDocument(string requestUrl)
 		{
-			int retry = 0;
-			int maxRetry = 2;
-			HtmlDocument html = null;
-
 			var cookieContainer = new CookieContainer();
 			var baseAddress = new Uri(_javlibSettings.BaseAddress);
 			cookieContainer.Add(baseAddress, new Cookie("cf_clearance", _javlibSettings.Cloudflare));
 			var headers = new Dictionary<string, string>() { { "Cookie", cookieContainer.GetCookieHeader(baseAddress) } };
 
-			while(retry <= maxRetry && html == null)
-			{
-				try
-				{
-					html = _htmlService.GetHtmlDocumentAsync(requestUrl, headers).Result;
-				}
-				catch(Exception ex)
-				{
-					_logger?.LogError(ex, $"Error when requesting page: {requestUrl}");
-					retry++;
-					if(retry <= maxRetry)
-						_logger?.LogInformation($"Retrying {retry}/{maxRetry} times");
-				}
-			}
-
-			return html;
+			return _htmlService.GetHtmlDocumentAsync(requestUrl, headers).Result;
 		}
 	}
 }

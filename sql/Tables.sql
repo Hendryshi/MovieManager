@@ -16,7 +16,7 @@ CREATE TABLE J_Movie
 	thumbnailUrl NVARCHAR(1000) NULL,
 	coverUrl NVARCHAR(1000) NULL,
 	favLevel SMALLINT NULL DEFAULT(0),
-	idStatus INT NOT NULL,
+	idStatus SMALLINT NOT NULL,
 	url NVARCHAR(500) NULL,
 	dtUpdate DATETIME NULL,
 )
@@ -27,6 +27,7 @@ CREATE TABLE J_MovieRelation
 	idTyRole SMALLINT NOT NULL,
 	idRelation INT NOT NULL,
 	CONSTRAINT FK_MovieRelation_IdMoive FOREIGN KEY (idMovie) REFERENCES J_Movie(idMovie),
+	CONSTRAINT FK_MovieRelation_IdTyRole FOREIGN KEY (idTyRole) REFERENCES D_MovieRoleType(idTyRole),
 	CONSTRAINT PK_MovieRelation PRIMARY KEY (idMovie,idTyRole, idRelation)
 )
 
@@ -79,3 +80,42 @@ CREATE TABLE J_Actor
 	favLevel SMALLINT NULL DEFAULT(0),
 	dtUpdate DATETIME NULL
 )
+
+CREATE TABLE J_MovieMagnet(
+	idMovieMag INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	idMovie INT NOT NULL,
+	movieNumber NVARCHAR(20) NOT NULL,
+	magName NVARCHAR(500) NOT NULL,
+	magnetUrl NVARCHAR(1000) NOT NULL,
+	hash  NVARCHAR(1000) NOT NULL UNIQUE,
+	size DECIMAL(10,2) NULL,
+	dtMagnet DATETIME NULL,
+	isHD BIT NOT NULL DEFAULT 0,
+	hasSub BIT NOT NULL DEFAULT 0,
+	idMagSource SMALLINT NOT NULL,
+	dlTime INT NULL,
+	savePath NVARCHAR(500) NULL,
+	idStatus SMALLINT NOT NULL,
+	dtUpdate DATETIME NOT NULL,
+	CONSTRAINT FK_J_MovieMagnet_IdMoive FOREIGN KEY (idMovie) REFERENCES J_Movie(idMovie),
+	CONSTRAINT FK_MovieMagnet_IdMagSource FOREIGN KEY (idMagSource) REFERENCES D_MagnetSource(idMagSource)
+)
+
+CREATE TABLE D_MovieRoleType
+(
+	idTyRole SMALLINT NOT NULL PRIMARY KEY,
+	descTyRole NVARCHAR(200) NOT NULL
+)
+GO
+INSERT INTO D_MovieRoleType(idTyRole, descTyRole)
+VALUES(1, 'Category'), (2,	'Company'), (3,	'Director'), (4, 'Publisher'), (5, 'Star')
+
+
+CREATE TABLE D_MagnetSource
+(
+	idMagSource SMALLINT NOT NULL PRIMARY KEY,
+	descMagSource NVARCHAR(200) NOT NULL
+)
+GO
+INSERT INTO D_MagnetSource(idMagSource, descMagSource)
+VALUES(1, 'https://www.javbus.com/{0}'), (2, 'https://sukebei.nyaa.si/')

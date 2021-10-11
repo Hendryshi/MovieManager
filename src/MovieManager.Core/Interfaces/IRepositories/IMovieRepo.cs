@@ -11,6 +11,7 @@ namespace MovieManager.Core.Interfaces
 	{
 		Movie FindById(int idMovie);
 		Movie FindByNumber(string movieNbr);
+		List<Movie> LoadMovieToDownloadMag();
 		Movie Save(Movie movie);
 	}
 }

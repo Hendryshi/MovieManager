@@ -24,6 +24,7 @@ namespace MovieManager.Infrastructure
 			services.AddTransient<ICategoryRepo, Repositories.CategoryRepo>();
 			services.AddTransient<ICompanyRepo, Repositories.CompanyRepo>();
 			services.AddTransient<IDirectorRepo, Repositories.DirectorRepo>();
+			services.AddTransient<IMovieMagnetRepo, Repositories.MovieMagnetRepo>();
 			return services;
 		}
 	}

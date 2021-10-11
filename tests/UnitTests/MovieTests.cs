@@ -85,6 +85,14 @@ namespace UnitTests
 		}
 
 		[Fact]
+		public void TestLoadMovieToDownloadMagnet()
+		{
+			List<Movie> lstMovies = _movieService.LoadMovieToDownloadMag();
+			Assert.True(lstMovies.Count > 0);
+			lstMovies.ForEach(m => _output.WriteLine(m.Number));
+		}
+
+		[Fact]
 		public void TestStringJoin()
 		{
 			List<MovieRelation> movieRelations = new List<MovieRelation>() { new MovieRelation() { IdMovie = 1, IdTyRole = JavlibRoleType.Director, IdRelation = 300 }, new MovieRelation() { IdMovie = 3, IdTyRole = JavlibRoleType.Director, IdRelation = 300 } };

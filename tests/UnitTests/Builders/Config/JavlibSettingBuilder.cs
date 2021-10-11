@@ -19,7 +19,7 @@ namespace UnitTests.Builders
 			JavlibSettings setting = new JavlibSettings()
 			{
 				BaseAddress = "http://www.javlibrary.com/cn/",
-				Cloudflare = "sGcwmjgbREW8Zg1EuuG3gV6H9hmbSQ0BKOvBvGkDqg0-1632418033-0-250",
+				Cloudflare = "fjZrsz79hQ21c6ruXKHZq4EmLa3QeQpWUAx11D5teHY-1633465963-0-250",
 				NewReleaseUrl = "http://www.javlibrary.com/cn/vl_newrelease.php",
 			};
 

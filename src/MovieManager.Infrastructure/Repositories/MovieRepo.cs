@@ -57,5 +57,14 @@ namespace MovieManager.Infrastructure.Repositories
 
 			return movie;
 		}
+
+		public List<Movie> LoadMovieToDownloadMag()
+		{
+			var sql = new StringBuilder();
+			sql.AppendLine(@"SELECT idMovie FROM vMovieToDownloadMag");
+			sql.AppendLine("ORDER BY dtRelease DESC, hasSub, hasHD");
+			List<int> lstIdMovies = db.Query<int>(sql.ToString());
+			return lstIdMovies.Select(id => FindById(id)).ToList();
+		}
 	}
 }

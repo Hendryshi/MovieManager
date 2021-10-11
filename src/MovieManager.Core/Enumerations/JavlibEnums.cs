@@ -24,6 +24,7 @@ namespace MovieManager.Core.Enumerations
 		Scan
 	}
 
+	//TODO: Add constraint to every table in DB
 	public enum JavlibFavLevel : short
 	{
 		NotInterest = 0,

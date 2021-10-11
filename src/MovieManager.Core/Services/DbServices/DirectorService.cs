@@ -34,6 +34,5 @@ namespace MovieManager.Core.Services
 		{
 			return _directorRepo.FindByName(name, url);
 		}
-
 	}
 }

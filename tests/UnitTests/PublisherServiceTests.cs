@@ -14,12 +14,12 @@ using MovieManager.Core.Enumerations;
 
 namespace UnitTests
 {
-	public class PublisherServiceTest
+	public class PublisherServiceTests
 	{
 		private readonly ITestOutputHelper _output;
 		private PublisherService _publisherService;
 		
-		public PublisherServiceTest(ITestOutputHelper output)
+		public PublisherServiceTests(ITestOutputHelper output)
 		{
 			_output = output;
 			_publisherService = new PublisherServiceBuilder().Build();
