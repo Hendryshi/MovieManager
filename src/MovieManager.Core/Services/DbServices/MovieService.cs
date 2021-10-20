@@ -36,15 +36,6 @@ namespace MovieManager.Core.Services
 			return _movieRepository.FindByNumber(movieNbr);
 		}
 
-		public void UpdateStatus(Movie movie, MovieStatus movieStatus)
-		{
-			if((short)movieStatus >= (short)movie.IdStatus)
-			{
-				movie.IdStatus = movieStatus;
-				SaveMovie(movie);
-			}
-		}
-
 		public List<Movie> LoadMovieToDownloadMag()
 		{
 			return _movieRepository.LoadMovieToDownloadMag();

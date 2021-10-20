@@ -14,6 +14,7 @@ using System.Linq;
 
 namespace UnitTests
 {
+	//TODO: Change sql to sqlLite for test
 	public class MovieTests
 	{
 		private readonly ITestOutputHelper _output;

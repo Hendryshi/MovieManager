@@ -89,8 +89,5 @@ namespace UnitTests
 		{
 			_javScrapeService.ScrapeNewReleasedMovie();
 		}
-
-
-
 	}
 }

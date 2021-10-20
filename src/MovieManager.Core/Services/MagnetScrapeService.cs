@@ -56,7 +56,8 @@ namespace MovieManager.Core.Services
 				if(magnets.Count > 0)
 				{
 					_movieMagnetService.SaveMovieMagnetList(magnets);
-					_movieService.UpdateStatus(movie, MovieStatus.HasTorrent);
+					movie.UpdateStatus(MovieStatus.HasTorrent);
+					_movieService.SaveMovie(movie);
 					_logger?.LogInformation("Scrape magnet for movie {movieNumber}: {magCount} new torrents inserted", movie.Number, magnets.Count);
 				}
 				else

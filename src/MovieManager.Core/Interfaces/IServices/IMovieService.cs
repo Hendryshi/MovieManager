@@ -14,6 +14,5 @@ namespace MovieManager.Core.Interfaces
 		Movie FindMovieByNumber(string movieNbr);
 		List<Movie> LoadMovieToDownloadMag();
 		Movie SaveMovie(Movie movie);
-		void UpdateStatus(Movie movie, MovieStatus movieStatus);
 	}
 }

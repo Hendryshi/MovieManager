@@ -60,10 +60,11 @@ namespace MovieManager.Core.Services
 					if(lstMovieCurrentPage.Count > 0)
 					{
 						_logger?.LogInformation("Treating {pageCount} movies in page {currentPage}", lstMovieCurrentPage.Count, currentPage);
-						foreach(Movie movie in lstMovieCurrentPage)
+						foreach(Movie movie in lstMovieCurrentPage.GroupBy(x => x.Number.ToLower()).Select(x => x.First()))
 						{
 							ScanMovieDetails(new UrlInfo() { EntryType = JavlibEntryType.Movie, ExactUrl = movie.Url }, movie);
-							_movieService.UpdateStatus(movie, MovieStatus.Scanned);
+							movie.UpdateStatus(MovieStatus.Scanned);
+							_movieService.SaveMovie(movie);
 						}
 					}
 				}
@@ -72,6 +73,8 @@ namespace MovieManager.Core.Services
 				_logger?.LogWarning("Nothing found when scraping new released movie. UrlInfo: {0}", urlInfo.ToString());
 		}
 
+
+		//TDOO: Update to exclude multiple actor, vr, 4h and over
 		public void ScanMovieDetails(UrlInfo urlInfo, Movie movie)
 		{
 			try

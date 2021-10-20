@@ -35,5 +35,13 @@ namespace MovieManager.Core.Entities
 
 		[Computed]
 		public List<MovieRelation> MovieRelations { get; set; } = new List<MovieRelation>();
+
+		
+		public void UpdateStatus(MovieStatus movieStatus)
+		{
+			if((short)movieStatus >= (short)this.IdStatus)
+				this.IdStatus = movieStatus;
+		}
+
 	}
 }
