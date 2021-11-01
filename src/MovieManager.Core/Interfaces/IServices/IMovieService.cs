@@ -12,7 +12,9 @@ namespace MovieManager.Core.Interfaces
 	{
 		Movie FindMovieById(int idMovie);
 		Movie FindMovieByNumber(string movieNbr);
-		List<Movie> LoadMovieToDownloadMag();
+		List<Movie> LoadMoviesToDownload();
+		List<Movie> LoadMoviesToScrapeMagnet();
 		Movie SaveMovie(Movie movie);
+		Movie UpdateStatus(Movie movie, MovieStatus newStatus);
 	}
 }

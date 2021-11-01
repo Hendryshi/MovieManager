@@ -14,12 +14,13 @@ using MovieManager.Core.Enumerations;
 
 namespace UnitTests
 {
-	public class MovieMagServiceTests
+	public class MovieMagTests
 	{
 		private readonly ITestOutputHelper _output;
 		private MovieMagnetService _movieMagService;
+		private MovieService movieService;
 		
-		public MovieMagServiceTests(ITestOutputHelper output)
+		public MovieMagTests(ITestOutputHelper output)
 		{
 			_output = output;
 			_movieMagService = new MovieMagServiceBuilder().Build();
@@ -67,6 +68,16 @@ namespace UnitTests
 		}
 
 		[Fact]
+		public void TestFindMagnetByStatus()
+		{
+			var magnets = _movieMagService.FindMovieMagnetByStatus(MagnetStatus.Downloading);
+			Assert.Empty(magnets);
+
+			magnets = _movieMagService.FindMovieMagnetByStatus(MagnetStatus.IsReady);
+			Assert.NotEmpty(magnets);
+		}
+
+		[Fact]
 		public void TestUpdateMagnet()
 		{
 			int idMovieMag = 4;
@@ -87,5 +98,29 @@ namespace UnitTests
 			Assert.Equal(expectedValue, string.Format(_movieMagService.LoadMagSourceUrl(MagnetSource.Javbus), "cawd-123"));
 		}
 
+		[Fact]
+		public void TestFindBestMatchMagnetByMovie()
+		{
+			Movie movie = new Movie() { IdMovie = 71, IdStatus = MovieStatus.Downloaded };
+			var magnet = _movieMagService.FindBestMatchMagnetByMovie(movie);
+
+			var expectedValue = 1506;
+			Assert.Equal(expectedValue, magnet.IdMovieMag);
+		}
+
+		[Fact]
+		public void TestAddMovieMagnetHistory()
+		{
+			var dbContext = new DapperContext(new ConfigBuilder().Build());
+			var movieHistoryRepo = new MovieHistoryRepo(dbContext);
+			var movieMagRepo = new MovieMagnetRepo(dbContext, movieHistoryRepo);
+
+			MovieMagnet magnet = new MovieMagnet() { IdMovieMag = 9, IdMovie = 73, MovieNumber = "FSDSS-298", MagName = "magnamesf", Size = 5400, DtMagnet = new DateTime(2020, 1, 1) };
+
+			List<MovieHistory> movieHistories = movieMagRepo.AddHistory(magnet);
+			
+			movieHistories.ForEach(h => _output.WriteLine(h.DescHistory));
+
+		}
 	}
 }

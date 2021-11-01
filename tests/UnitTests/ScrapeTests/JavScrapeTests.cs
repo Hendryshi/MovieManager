@@ -14,11 +14,11 @@ using Xunit.Abstractions;
 
 namespace UnitTests
 {
-	public class JavScrapeServiceTests
+	public class JavScrapeTests
 	{
 		private readonly ITestOutputHelper _output;
-		private readonly IOptions<JavlibSettings> _javlibSettings;
-		private readonly IOptions<CommonSettings> _commonSettings;
+		private readonly IOptionsSnapshot<JavlibSettings> _javlibSettings;
+		private readonly IOptionsSnapshot<CommonSettings> _commonSettings;
 		private readonly LoggerAdapter<JavScrapeService> _logger;
 		private readonly HtmlService _htmlService;
 		private readonly MovieService _movieService;
@@ -29,7 +29,7 @@ namespace UnitTests
 		private readonly PublisherService _publisherService;
 		private readonly JavScrapeService _javScrapeService;
 
-		public JavScrapeServiceTests(ITestOutputHelper output)
+		public JavScrapeTests(ITestOutputHelper output)
 		{
 			_output = output;
 			_logger = new LoggerBuilder<JavScrapeService>().Build();
@@ -80,7 +80,6 @@ namespace UnitTests
 
 			_javScrapeService.ScanMovieDetails(urlInfo, movie);
 			_output.WriteLine(movie.ToString());
-			//_movieService.SaveMovie(movie);
 		}
 
 		//TODO: This should be placed in Functional Tests

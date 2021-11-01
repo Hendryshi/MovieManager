@@ -32,6 +32,7 @@ namespace MovieManager.Infrastructure.Logging
             _logger.LogInformation(exception, message, args);
         }
 
+        //TODO: Add if logEnable
         public void LogError(string message, params object[] args)
         {
             _logger.LogError(message, args);

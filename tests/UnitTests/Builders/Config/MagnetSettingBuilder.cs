@@ -11,11 +11,11 @@ namespace UnitTests.Builders
 {
 	class MagnetSettingBuilder
 	{
-		private Mock<IOptions<MagnetSettings>> _mockMagnetSetting;
+		private Mock<IOptionsSnapshot<MagnetSettings>> _mockMagnetSetting;
 
 		public MagnetSettingBuilder()
 		{
-			_mockMagnetSetting = new Mock<IOptions<MagnetSettings>>();
+			_mockMagnetSetting = new Mock<IOptionsSnapshot<MagnetSettings>>();
 			MagnetSettings setting = new MagnetSettings()
 			{
 				SearchSources = "Javbus, Sukebei",
@@ -25,7 +25,7 @@ namespace UnitTests.Builders
 			_mockMagnetSetting.Setup(ap => ap.Value).Returns(setting);
 		}
 
-		public IOptions<MagnetSettings> Build()
+		public IOptionsSnapshot<MagnetSettings> Build()
 		{
 			return _mockMagnetSetting.Object;
 		}

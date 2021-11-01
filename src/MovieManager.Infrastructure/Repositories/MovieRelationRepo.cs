@@ -30,8 +30,15 @@ namespace MovieManager.Infrastructure.Repositories
 			var sql = new StringBuilder();
 			sql.AppendLine($"MERGE INTO {Table} AS Target");
 			sql.AppendLine("USING(");
-			sql.AppendLine("	VALUES");
-			sql.AppendLine(string.Join(",", movieRelations.Select(mr => $"({idMovie}, {(short)mr.IdTyRole}, {mr.IdRelation})")));
+
+			if(movieRelations.Count > 0)
+			{
+				sql.AppendLine("	VALUES");
+				sql.AppendLine(string.Join(",", movieRelations.Select(mr => $"({idMovie}, {(short)mr.IdTyRole}, {mr.IdRelation})")));
+			}
+			else
+				sql.AppendLine("	SELECT 0, 0, 0 WHERE 1=0");
+
 			sql.AppendLine(") AS Source(idMovie, idTyRole, idRelation)");
 			sql.AppendLine("ON Source.idMovie = Target.idMovie AND Source.idTyRole = Target.idTyRole AND Source.idRelation = Target.idRelation");
 			sql.AppendLine("WHEN NOT MATCHED");

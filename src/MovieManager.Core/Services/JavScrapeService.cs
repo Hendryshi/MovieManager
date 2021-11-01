@@ -9,6 +9,7 @@ using MovieManager.Core.Settings;
 using MovieManager.Core.Enumerations;
 using MovieManager.Core.Entities;
 using MovieManager.Core.Extensions;
+using System.Globalization;
 
 namespace MovieManager.Core.Services
 {
@@ -24,7 +25,7 @@ namespace MovieManager.Core.Services
 		private readonly IDirectorService _directorService;
 		private readonly IPublisherService _publisherService;
 
-		public JavScrapeService(IAppLogger<JavScrapeService> logger, IOptions<JavlibSettings> javlibSettings,
+		public JavScrapeService(IAppLogger<JavScrapeService> logger, IOptionsSnapshot<JavlibSettings> javlibSettings,
 			IMovieService movieService, 
 			IActorService actorService,
 			ICategoryService categoryService,
@@ -47,7 +48,7 @@ namespace MovieManager.Core.Services
 		//TODO: Create a new object Report and insert it into DB
 		public void ScrapeNewReleasedMovie()
 		{
-			_logger?.LogInformation("Start Scraping New Released Movies");
+			_logger?.LogInformation("************** Start Scraping New Released Movies Job - {Date} **************", DateTime.Now.ToString("u", DateTimeFormatInfo.InvariantInfo));
 			UrlInfo urlInfo = new UrlInfo() { EntryType = JavlibEntryType.NewRelease };
 			int pageCount = GetPageCount(urlInfo);
 
@@ -63,7 +64,7 @@ namespace MovieManager.Core.Services
 						foreach(Movie movie in lstMovieCurrentPage.GroupBy(x => x.Number.ToLower()).Select(x => x.First()))
 						{
 							ScanMovieDetails(new UrlInfo() { EntryType = JavlibEntryType.Movie, ExactUrl = movie.Url }, movie);
-							movie.UpdateStatus(MovieStatus.Scanned);
+							_movieService.UpdateStatus(movie, MovieStatus.Scanned);
 							_movieService.SaveMovie(movie);
 						}
 					}
@@ -71,6 +72,8 @@ namespace MovieManager.Core.Services
 			}
 			else
 				_logger?.LogWarning("Nothing found when scraping new released movie. UrlInfo: {0}", urlInfo.ToString());
+
+			_logger?.LogInformation("************** Scraping New Released Movies Job End - {Date} **************", DateTime.Now.ToString("u", DateTimeFormatInfo.InvariantInfo));
 		}
 
 

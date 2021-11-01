@@ -23,7 +23,8 @@ namespace MovieManager.Core.Entities
 		public bool IsHD { get; set; }
 		public bool HasSub { get; set; }
 		public MagnetSource IdMagSource { get; set; }
-		public int? DlTime { get; set; }
+		public DateTime? DtStart { get; set; }
+		public DateTime? DtFinish { get; set; }
 		public string SavePath { get; set; }
 		public MagnetStatus IdStatus { get; set; } = MagnetStatus.IsReady;
 		public DateTime DtUpdate { get; set; }
@@ -39,5 +40,7 @@ namespace MovieManager.Core.Entities
 
 			return Hash;
 		}
+
+		
 	}
 }

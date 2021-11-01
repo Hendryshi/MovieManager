@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System.Text.RegularExpressions;
 using MovieManager.Core.Extensions;
+using System.Globalization;
 
 namespace MovieManager.Core.Services
 {
@@ -22,7 +23,7 @@ namespace MovieManager.Core.Services
 		private readonly MagnetSettings _magnetSettings;
 		private readonly IHtmlService _htmlService;
 
-		public MagnetScrapeService(IAppLogger<MagnetScrapeService> logger, IOptions<MagnetSettings> magnetSettings,
+		public MagnetScrapeService(IAppLogger<MagnetScrapeService> logger, IOptionsSnapshot<MagnetSettings> magnetSettings,
 			IMovieService movieService, IMovieMagnetService movieMagnetService, IHtmlService htmlService)
 		{
 			_logger = logger;
@@ -32,6 +33,15 @@ namespace MovieManager.Core.Services
 			_htmlService = htmlService;
 		}
 
+		public void DailyDownloadMovieMagnet()
+		{
+			_logger.LogInformation("************** Start Daily Movie Magnet Download Job - {Date} **************", DateTime.Now.ToString("u", DateTimeFormatInfo.InvariantInfo));
+			List<Movie> movies = _movieService.LoadMoviesToScrapeMagnet();
+			movies.ForEach(m => ScrapeMovieMagnet(m));
+			_logger.LogInformation("************** Daily Movie Magnet Download Job End - {Date} **************", DateTime.Now.ToString("u", DateTimeFormatInfo.InvariantInfo));
+		}
+
+		
 		public void ScrapeMovieMagnet(Movie movie)
 		{
 			try
@@ -56,7 +66,7 @@ namespace MovieManager.Core.Services
 				if(magnets.Count > 0)
 				{
 					_movieMagnetService.SaveMovieMagnetList(magnets);
-					movie.UpdateStatus(MovieStatus.HasTorrent);
+					_movieService.UpdateStatus(movie, MovieStatus.HasTorrent);
 					_movieService.SaveMovie(movie);
 					_logger?.LogInformation("Scrape magnet for movie {movieNumber}: {magCount} new torrents inserted", movie.Number, magnets.Count);
 				}

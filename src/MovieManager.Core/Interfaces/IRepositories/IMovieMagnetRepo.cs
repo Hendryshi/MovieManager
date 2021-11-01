@@ -16,5 +16,7 @@ namespace MovieManager.Core.Interfaces
 		MovieMagnet Save(MovieMagnet movieMagnet);
 		string LoadMagnetSource(MagnetSource magnetSource);
 		List<MovieMagnet> SaveList(List<MovieMagnet> movieMagnets);
+		List<MovieMagnet> FindByStatus(MagnetStatus magnetStatus, int idMovie = 0);
+		MovieMagnet FindByBestMatch(int idMovie, bool mustHasHD = false, bool mustHasSub = false);
 	}
 }

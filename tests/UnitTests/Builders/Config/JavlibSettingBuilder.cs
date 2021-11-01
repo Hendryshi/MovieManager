@@ -11,11 +11,11 @@ namespace UnitTests.Builders
 {
 	class JavlibSettingBuilder
 	{
-		private Mock<IOptions<JavlibSettings>> _mockJavlibSetting;
+		private Mock<IOptionsSnapshot<JavlibSettings>> _mockJavlibSetting;
 
 		public JavlibSettingBuilder()
 		{
-			_mockJavlibSetting = new Mock<IOptions<JavlibSettings>>();
+			_mockJavlibSetting = new Mock<IOptionsSnapshot<JavlibSettings>>();
 			JavlibSettings setting = new JavlibSettings()
 			{
 				BaseAddress = "http://www.javlibrary.com/cn/",
@@ -26,7 +26,7 @@ namespace UnitTests.Builders
 			_mockJavlibSetting.Setup(ap => ap.Value).Returns(setting);
 		}
 
-		public IOptions<JavlibSettings> Build()
+		public IOptionsSnapshot<JavlibSettings> Build()
 		{
 			return _mockJavlibSetting.Object;
 		}

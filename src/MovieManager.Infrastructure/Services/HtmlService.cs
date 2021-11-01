@@ -17,7 +17,7 @@ namespace MovieManager.Infrastructure.Services
 		private readonly CommonSettings _commonSettings;
 		private readonly IAppLogger<HtmlService> _logger;
 
-		public HtmlService(IAppLogger<HtmlService> logger, IOptions<CommonSettings> commonSettings)
+		public HtmlService(IAppLogger<HtmlService> logger, IOptionsSnapshot<CommonSettings> commonSettings)
 		{
 			_logger = logger;
 			_commonSettings = commonSettings.Value;

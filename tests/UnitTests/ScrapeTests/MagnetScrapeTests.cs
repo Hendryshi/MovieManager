@@ -14,18 +14,18 @@ using Xunit.Abstractions;
 
 namespace UnitTests
 {
-	public class MagnetScrapeServiceTests
+	public class MagnetScrapeTests
 	{
 		private readonly ITestOutputHelper _output;
-		private readonly IOptions<MagnetSettings> _magnetSettings;
-		private readonly IOptions<CommonSettings> _commonSettings;
+		private readonly IOptionsSnapshot<MagnetSettings> _magnetSettings;
+		private readonly IOptionsSnapshot<CommonSettings> _commonSettings;
 		private readonly MagnetScrapeService _magnetScrapeService;
 		private readonly LoggerAdapter<MagnetScrapeService> _logger;
 		private readonly HtmlService _htmlService;
 		private readonly MovieService _movieService;
 		private readonly MovieMagnetService _movieMagService;
 
-		public MagnetScrapeServiceTests(ITestOutputHelper output)
+		public MagnetScrapeTests(ITestOutputHelper output)
 		{
 			_output = output;
 			_logger = new LoggerBuilder<MagnetScrapeService>().Build();
@@ -58,10 +58,11 @@ namespace UnitTests
 			_magnetScrapeService.SearchMagnetFromSukebei(movie).ForEach(m => _output.WriteLine($"Size: {m.Size}, isHD: {m.IsHD}, Sub: {m.HasSub} "));
 		}
 
+		//TODO: Move it to functional test
 		[Fact]
 		public void TestDailyDownloadMagnet()
 		{
-			List<Movie> movies = _movieService.LoadMovieToDownloadMag();
+			List<Movie> movies = _movieService.LoadMoviesToScrapeMagnet();
 			movies.ForEach(m => _magnetScrapeService.ScrapeMovieMagnet(m));
 		}
 

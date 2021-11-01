@@ -12,5 +12,8 @@ namespace MovieManager.Core.Settings
 		public string Username { get; set; }
 		public string Password { get; set; }
 
+		public int MaxDownloadCount { get; set; }
+		public string DownloadRootPath { get; set; }
+		public string Category { get; set; }
 	}
 }

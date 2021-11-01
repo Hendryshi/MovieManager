@@ -17,10 +17,13 @@ namespace MovieManager.Core
 			services.AddTransient<ICategoryService, Services.CategoryService>();
 			services.AddTransient<ICompanyService, Services.CompanyService>();
 			services.AddTransient<IDirectorService, Services.DirectorService>();
+			services.AddTransient<IPublisherService, Services.PublisherService>();
 			services.AddTransient<IMovieMagnetService, Services.MovieMagnetService>();
 			services.AddTransient<IJavScrapeService, Services.JavScrapeService>();
 			services.AddTransient<IMagnetScrapeService, Services.MagnetScrapeService>();
+			services.AddTransient<IDownloadService, Services.DownloadService>();
 			services.AddTransient<IJavScrapeDailyJob, Jobs.JavScrapeDailyJob>();
+			
 			return services;
 		}
 	}

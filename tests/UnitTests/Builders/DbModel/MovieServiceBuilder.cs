@@ -7,10 +7,11 @@ using MovieManager.Core.Interfaces;
 
 namespace UnitTests.Builders
 {
-	class MovieServiceBuilder
+	public class MovieServiceBuilder
 	{
 		private MovieRepo _movieRepo;
 		private MovieRelationRepo _movieRelationRepo;
+		private MovieHistoryRepo _movieHistoryRepo;
 		private DapperContext _dbContext;
 		private readonly IAppLogger<MovieService> _logger;
 
@@ -18,7 +19,8 @@ namespace UnitTests.Builders
 		{
 			_dbContext = new DapperContext(new ConfigBuilder().Build());
 			_movieRelationRepo = new MovieRelationRepo(_dbContext);
-			_movieRepo = new MovieRepo(_dbContext, _movieRelationRepo);
+			_movieHistoryRepo = new MovieHistoryRepo(_dbContext);
+			_movieRepo = new MovieRepo(_dbContext, _movieRelationRepo, _movieHistoryRepo);
 			_logger = new LoggerBuilder<MovieService>().Build();
 		}
 

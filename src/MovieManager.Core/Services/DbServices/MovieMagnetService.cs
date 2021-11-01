@@ -46,6 +46,11 @@ namespace MovieManager.Core.Services
 			return _movieMagnetRepo.FindByMovie(movie, onlyAlive);
 		}
 
+		public List<MovieMagnet> FindMovieMagnetByStatus(MagnetStatus magnetStatus, int idMovie = 0)
+		{
+			return _movieMagnetRepo.FindByStatus(magnetStatus, idMovie);
+		}
+
 		public string LoadMagSourceUrl(MagnetSource magnetSource)
 		{
 			return _movieMagnetRepo.LoadMagnetSource(magnetSource);
@@ -54,6 +59,13 @@ namespace MovieManager.Core.Services
 		public string GenerateHashFromMagnet(string magnetUrl)
 		{
 			return null;
+		}
+
+		public MovieMagnet FindBestMatchMagnetByMovie(Movie movie)
+		{
+			bool mustHasHD = movie.IdStatus == MovieStatus.Downloaded;
+			bool mustHasSub = (movie.IdStatus == MovieStatus.Downloaded || movie.IdStatus == MovieStatus.HasTorrent);
+			return _movieMagnetRepo.FindByBestMatch(movie.IdMovie, mustHasHD, mustHasSub);
 		}
 	}
 }

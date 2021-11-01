@@ -12,7 +12,7 @@ using Serilog;
 
 namespace UnitTests.Builders
 {
-	class LoggerBuilder<T>
+	public class LoggerBuilder<T>
 	{
 		private ILoggerFactory _loggerFactory;
 

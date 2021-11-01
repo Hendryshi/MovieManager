@@ -7,16 +7,18 @@ using MovieManager.Core.Interfaces;
 
 namespace UnitTests.Builders
 {
-	class MovieMagServiceBuilder
+	public class MovieMagServiceBuilder
 	{
 		private MovieMagnetRepo _movieMagRepo;
+		private MovieHistoryRepo _movieHistoryRepo;
 		private DapperContext _dbContext;
 		private readonly IAppLogger<MovieMagnetService> _logger;
 
 		public MovieMagServiceBuilder()
 		{
 			_dbContext = new DapperContext(new ConfigBuilder().Build());
-			_movieMagRepo = new MovieMagnetRepo(_dbContext);
+			_movieHistoryRepo = new MovieHistoryRepo(_dbContext);
+			_movieMagRepo = new MovieMagnetRepo(_dbContext, _movieHistoryRepo);
 			_logger = new LoggerBuilder<MovieMagnetService>().Build();
 		}
 

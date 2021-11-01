@@ -39,8 +39,9 @@ namespace MovieManager.Core.Entities
 		
 		public void UpdateStatus(MovieStatus movieStatus)
 		{
-			if((short)movieStatus >= (short)this.IdStatus)
+			if((short)movieStatus >= (short)this.IdStatus || this.IdStatus == MovieStatus.InError)
 				this.IdStatus = movieStatus;
+			
 		}
 
 	}

@@ -11,6 +11,7 @@ using MovieManager.Infrastructure.Repositories;
 using Xunit.Abstractions;
 using System.Collections.Generic;
 using System.Linq;
+using MovieManager.Core.Extensions;
 
 namespace UnitTests
 {
@@ -86,11 +87,34 @@ namespace UnitTests
 		}
 
 		[Fact]
-		public void TestLoadMovieToDownloadMagnet()
+		public void TestLoadMoviesToScrapeMagnet()
 		{
-			List<Movie> lstMovies = _movieService.LoadMovieToDownloadMag();
+			List<Movie> lstMovies = _movieService.LoadMoviesToScrapeMagnet();
 			Assert.True(lstMovies.Count > 0);
 			lstMovies.ForEach(m => _output.WriteLine(m.Number));
+		}
+
+		[Fact]
+		public void TestLoadMoviesToDownload()
+		{
+			List<Movie> lstMovies = _movieService.LoadMoviesToDownload();
+			Assert.True(lstMovies.Count > 0);
+			lstMovies.ForEach(m => _output.WriteLine(m.Number));
+		}
+
+		[Fact]
+		public void TestMovieAddHistory()
+		{
+			var dbContext = new DapperContext(new ConfigBuilder().Build());
+			var movieRelationRepo = new MovieRelationRepo(dbContext);
+			var movieHistoryRepo = new MovieHistoryRepo(dbContext);
+			var movieRepo = new MovieRepo(dbContext, movieRelationRepo, movieHistoryRepo);
+			var movie = new Movie() { IdMovie = 1, Number = "PPPP-001", Actor = "my actor", Category = "我是jiajia", Title = "※未成年※コンドーム一切無し※19歳スケベ剥き出し温泉旅行※4本番やりらふぃー※モデルの卵ちゃん" };
+
+			List<MovieHistory> movieHistories = movieRepo.AddHistory(movie);
+			movieHistories.ForEach(h => _output.WriteLine(h.DescHistory));
+
+			_movieService.SaveMovie(movie);
 		}
 
 		[Fact]
@@ -98,6 +122,13 @@ namespace UnitTests
 		{
 			List<MovieRelation> movieRelations = new List<MovieRelation>() { new MovieRelation() { IdMovie = 1, IdTyRole = JavlibRoleType.Director, IdRelation = 300 }, new MovieRelation() { IdMovie = 3, IdTyRole = JavlibRoleType.Director, IdRelation = 300 } };
 			_output.WriteLine(string.Join(",", movieRelations.Select(mr => $"({mr.IdMovie}, {mr.IdTyRole}, {mr.IdRelation})")));
+		}
+
+		[Fact]
+		public void TestTruncate()
+		{
+			string testStr = "012";
+			_output.WriteLine(testStr.Truncate(5));
 		}
 	}
 }

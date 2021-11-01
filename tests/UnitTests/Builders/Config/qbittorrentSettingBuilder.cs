@@ -11,22 +11,25 @@ namespace UnitTests.Builders
 {
 	class qbittorrentSettingBuilder
 	{
-		private Mock<IOptions<QbittorrentSettings>> _mockQbittorrentSetting;
+		private Mock<IOptionsSnapshot<QbittorrentSettings>> _mockQbittorrentSetting;
 
 		public qbittorrentSettingBuilder()
 		{
-			_mockQbittorrentSetting = new Mock<IOptions<QbittorrentSettings>>();
+			_mockQbittorrentSetting = new Mock<IOptionsSnapshot<QbittorrentSettings>>();
 			QbittorrentSettings setting = new QbittorrentSettings()
 			{
 				WebUrl = "http://127.0.0.1:6882/",
 				Username = "admin",
-				Password = "adminadmin"
+				Password = "adminadmin",
+				MaxDownloadCount = 3,
+				DownloadRootPath = @"E:\TEST\JavDownload",
+				Category = "jav"
 			};
 
 			_mockQbittorrentSetting.Setup(ap => ap.Value).Returns(setting);
 		}
 
-		public IOptions<QbittorrentSettings> Build()
+		public IOptionsSnapshot<QbittorrentSettings> Build()
 		{
 			return _mockQbittorrentSetting.Object;
 		}

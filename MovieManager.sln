@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{DEFB5E5E-E8D
 		Views.sql = Views.sql
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionalTests", "tests\FunctionalTests\FunctionalTests.csproj", "{728C77CD-6E31-4924-A5BD-0347E3C2B2EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{52746991-A09B-4F2B-8224-82AE0E555226}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52746991-A09B-4F2B-8224-82AE0E555226}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52746991-A09B-4F2B-8224-82AE0E555226}.Release|Any CPU.Build.0 = Release|Any CPU
+		{728C77CD-6E31-4924-A5BD-0347E3C2B2EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{728C77CD-6E31-4924-A5BD-0347E3C2B2EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{728C77CD-6E31-4924-A5BD-0347E3C2B2EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{728C77CD-6E31-4924-A5BD-0347E3C2B2EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +58,7 @@ Global
 		{2C39175F-A9AA-4DC9-932F-84B83C288A44} = {DCA80FE4-0514-4AFD-9C6B-248ADC312079}
 		{5BA86BF5-8D4B-4259-9FD3-D817ED96132C} = {DCA80FE4-0514-4AFD-9C6B-248ADC312079}
 		{52746991-A09B-4F2B-8224-82AE0E555226} = {6010E1CE-EDC1-48F9-8963-38822307ECCC}
+		{728C77CD-6E31-4924-A5BD-0347E3C2B2EB} = {6010E1CE-EDC1-48F9-8963-38822307ECCC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7FF58C3B-AFF1-4A0E-85ED-20451F708336}

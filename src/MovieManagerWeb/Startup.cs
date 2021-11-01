@@ -19,12 +19,22 @@ namespace MovieManagerWeb
 {
 	public class Startup
 	{
-		public Startup(IConfiguration configuration)
+		public Startup(IConfiguration configuration, IWebHostEnvironment environment)
 		{
-			_config = configuration;
+			_env = environment;
+
+			// use the default config and add config from appsettings.COMPUTERNAME.json (if it exists)
+			var builder = new ConfigurationBuilder()
+				.SetBasePath(environment.ContentRootPath)
+				.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+				.AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true, reloadOnChange:true)
+				.AddEnvironmentVariables();
+
+			_config = builder.Build();
 		}
 
 		public IConfiguration _config { get; }
+		public IWebHostEnvironment _env { get; }
 
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
@@ -42,9 +52,9 @@ namespace MovieManagerWeb
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IBackgroundJobClient backgroundJobClient, IRecurringJobManager recurringJobManager, IServiceProvider serviceProvider)
+		public void Configure(IApplicationBuilder app, IBackgroundJobClient backgroundJobClient, IRecurringJobManager recurringJobManager, IServiceProvider serviceProvider)
 		{
-			if(env.IsDevelopment())
+			if(_env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
 			}
@@ -74,9 +84,9 @@ namespace MovieManagerWeb
 		// TODO: Retrive the job to run & args & crontab from database
 		public void ConfigureHangfireJob(IRecurringJobManager recurringJobManager, IServiceProvider serviceProvider)
 		{
-			//BackgroundJob.Enqueue(() => Console.WriteLine("Hello Hangfire job !"));
-			//recurringJobManager.AddOrUpdate("Run every minute", () => serviceProvider.GetService<MovieManager.Core.Job.ITestJob>().Run(), "* * * * * ");
-			BackgroundJob.Enqueue(() => serviceProvider.GetService<IJavScrapeDailyJob>().Run());
+			BackgroundJob.Enqueue(() => Console.WriteLine("Hello Hangfire job !"));
+			recurringJobManager.AddOrUpdate("Run every minute", () => serviceProvider.GetService<IDownloadService>().MonitorMovieDownload(), "*/5 * * * * ");
+			//BackgroundJob.Enqueue(() => serviceProvider.GetService<IDownloadService>().MonitorMovieDownload());
 		}
 	}
 }

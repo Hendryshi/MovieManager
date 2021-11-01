@@ -17,7 +17,12 @@ namespace MovieManager.Infrastructure.DbContext
 	{
 		private readonly IConfiguration _configuration;
 		private readonly string connectionString;
-		private IDbConnection GetConnection() => new SqlConnection(connectionString);
+		private IDbConnection GetConnection()
+		{
+			var db = new SqlConnection(connectionString);
+			db.Execute("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");
+			return db;
+		}
 
 		public DapperContext(IConfiguration configuration)
 		{
