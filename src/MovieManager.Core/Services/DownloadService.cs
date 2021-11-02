@@ -142,7 +142,7 @@ namespace MovieManager.Core.Services
 
 		public bool TorrentIsNotActive(MovieMagnet magnet, TorrentInfo torrent)
 		{
-			return (DateTime.Now - magnet.DtStart.Value).Days > 2 && torrent.Progress < 0.1 && torrent.EstimatedTime.Value.Days > 100;
+			return (DateTime.Now - magnet.DtStart.Value).Days > 2 && torrent.Progress < 0.5 && torrent.EstimatedTime.Value.Days >= 100;
 		}	
 
     }

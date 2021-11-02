@@ -13,7 +13,7 @@ using MovieManager.Core;
 using MovieManager.Core.Interfaces;
 using MovieManager.Infrastructure;
 using Serilog;
-
+using Hangfire.SqlServer;
 
 namespace MovieManagerWeb
 {
@@ -44,7 +44,14 @@ namespace MovieManagerWeb
 				config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
 				.UseSimpleAssemblyNameTypeSerializer()
 				.UseDefaultTypeSerializer()
-				.UseMemoryStorage());
+				.UseSqlServerStorage(_config.GetConnectionString("MovieManagerDB"), new SqlServerStorageOptions
+				{
+					CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+					SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+					QueuePollInterval = TimeSpan.Zero,
+					UseRecommendedIsolationLevel = true,
+					DisableGlobalLocks = true
+				}));
 
 			services.AddHangfireServer();
 			services.AddInfrastructureInjection(_config);

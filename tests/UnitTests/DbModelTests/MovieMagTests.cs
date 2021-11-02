@@ -122,5 +122,55 @@ namespace UnitTests
 			movieHistories.ForEach(h => _output.WriteLine(h.DescHistory));
 
 		}
+
+		[Fact]
+		public void TestSaveListMagnet()
+		{
+			List<MovieMagnet> movieMagnets = new List<MovieMagnet>();
+			MovieMagnet magnet = new MovieMagnet() { IdMovieMag = 9, IdMovie = 73, MovieNumber = "FSDSS-298", MagName = "magnadsdsdesf", MagnetUrl = "dsfdsfdsf", Hash = "dvsffvdsv", Size = 1234, IdMagSource = MagnetSource.Javbus
+				, DtMagnet = new DateTime(2021, 1, 1) };
+			MovieMagnet magnet2 = new MovieMagnet() { IdMovieMag = 25, IdMovie = 82, MovieNumber = "GVH-301", MagName = "sdfezfdsf", MagnetUrl = "dsfdsfdsfezfzef", Hash = "dvsvdsv", Size = 3154, IdMagSource = MagnetSource.Javbus
+				, DtMagnet = new DateTime(2021, 1, 2) };
+
+			movieMagnets.Add(magnet);
+			movieMagnets.Add(magnet2);
+
+			_movieMagService.SaveMovieMagnetList(movieMagnets);
+		}
+
+		[Fact]
+		public void TestSaveListMagnetFailed()
+		{
+			List<MovieMagnet> movieMagnets = new List<MovieMagnet>();
+			MovieMagnet magnet = new MovieMagnet()
+			{
+				IdMovieMag = 9,
+				IdMovie = 73,
+				MovieNumber = "FSDSS-298",
+				MagName = "magnadsdsdesf",
+				MagnetUrl = "dsfdsfdsf",
+				Hash = "dvsffvdsv",
+				Size = 1234,
+				IdMagSource = MagnetSource.Sukebei,
+				DtMagnet = new DateTime(2021, 1, 1)
+			};
+			MovieMagnet magnet2 = new MovieMagnet()
+			{
+				IdMovieMag = 25,
+				IdMovie = 82,
+				MovieNumber = "GVH-301",
+				MagName = "sdfezfdsf",
+				MagnetUrl = "dsfdsfdsfezfzef",
+				Hash = "dvsffvdsv",
+				Size = 3154,
+				IdMagSource = MagnetSource.Javbus,
+				DtMagnet = new DateTime(2021, 1, 2)
+			};
+
+			movieMagnets.Add(magnet);
+			movieMagnets.Add(magnet2);
+
+			_movieMagService.SaveMovieMagnetList(movieMagnets);
+		}
 	}
 }

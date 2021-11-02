@@ -37,6 +37,8 @@ namespace MovieManager.Infrastructure.Repositories
 					throw new Exception($"MovieMagnet not found in DB: {movieMagnet.ToString()}");
 
 				_movieHistoryRepo.SaveList(movieMagnet.IdMovie, movieHistories);
+
+				trans.Complete();
 			}
 			return movieMagnet;
 		}
