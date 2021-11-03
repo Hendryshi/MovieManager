@@ -7,6 +7,6 @@ namespace MovieManager.Core.Interfaces
 {
 	public interface IHtmlService
 	{
-		Task<HtmlDocument> GetHtmlDocumentAsync(string requestUrl, Dictionary<string, string> headers = null);
+		Task<HtmlDocument> GetHtmlDocumentAsync(string requestUrl, Dictionary<string, string> headers = null, int maxRetry = 2);
 	}
 }

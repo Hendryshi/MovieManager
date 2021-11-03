@@ -17,7 +17,6 @@ namespace MovieManagerWeb
 		{
 			Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT ");
 
-			//TODO: Add environment variable here to identify dev/prod
 			var configuration = new ConfigurationBuilder()
 				.AddJsonFile("appsettings.json", optional:false, reloadOnChange:true)
 				.AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)

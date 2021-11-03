@@ -11,9 +11,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using MovieManager.Core;
 using MovieManager.Core.Interfaces;
+using MovieManager.Core.Enumerations;
 using MovieManager.Infrastructure;
 using Serilog;
 using Hangfire.SqlServer;
+using Hangfire.Storage;
 
 namespace MovieManagerWeb
 {
@@ -88,12 +90,39 @@ namespace MovieManagerWeb
 			ConfigureHangfireJob(recurringJobManager, serviceProvider);
 		}
 
-		// TODO: Retrive the job to run & args & crontab from database
 		public void ConfigureHangfireJob(IRecurringJobManager recurringJobManager, IServiceProvider serviceProvider)
 		{
-			BackgroundJob.Enqueue(() => Console.WriteLine("Hello Hangfire job !"));
-			recurringJobManager.AddOrUpdate("Run every minute", () => serviceProvider.GetService<IDownloadService>().MonitorMovieDownload(), "*/5 * * * * ");
-			//BackgroundJob.Enqueue(() => serviceProvider.GetService<IDownloadService>().MonitorMovieDownload());
+			using(var connection = JobStorage.Current.GetConnection())
+			{
+				foreach(var recurringJob in StorageConnectionExtensions.GetRecurringJobs(connection))
+				{
+					RecurringJob.RemoveIfExists(recurringJob.Id);
+				}
+			}
+
+			string recurringJobs = _config.GetSection("HangfireJob").GetValue<string>("RecurringJobs");
+			foreach(string recurringJob in recurringJobs.Split(';'))
+			{
+				HangfireJob hangfireJob;
+				string jobName = recurringJob.Split(':')[0].Trim();
+				string jobCron = recurringJob.Split(':')[1].Trim();
+
+				if(Enum.TryParse(jobName, true, out hangfireJob))
+				{
+					switch(hangfireJob)
+					{
+						case HangfireJob.ScrapeNewReleasedMovie:
+							recurringJobManager.AddOrUpdate(jobName, () => serviceProvider.GetService<IJavScrapeService>().ScrapeNewReleasedMovie(), jobCron);
+							break;
+						case HangfireJob.ScrapeMovieMagnet:
+							recurringJobManager.AddOrUpdate(jobName, () => serviceProvider.GetService<IMagnetScrapeService>().DailyDownloadMovieMagnet(), jobCron);
+							break;
+						case HangfireJob.MonitorMovieDownload:
+							recurringJobManager.AddOrUpdate(jobName, () => serviceProvider.GetService<IDownloadService>().MonitorMovieDownload(), jobCron);
+							break;
+					}
+				}
+			}
 		}
 	}
 }

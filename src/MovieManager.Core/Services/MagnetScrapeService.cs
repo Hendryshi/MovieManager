@@ -82,7 +82,7 @@ namespace MovieManager.Core.Services
 		public List<MovieMagnet> SearchMagnetFromJavbus(Movie movie)
 		{
 			string javbusUrl = string.Format(_movieMagnetService.LoadMagSourceUrl(MagnetSource.Javbus), movie.Number);
-			HtmlDocument htmlDocument = _htmlService.GetHtmlDocumentAsync(javbusUrl).Result;
+			HtmlDocument htmlDocument = _htmlService.GetHtmlDocumentAsync(javbusUrl, maxRetry:1).Result;
 			List<MovieMagnet> lstMovieMagnets = new List<MovieMagnet>();
 
 			if(htmlDocument != null)
@@ -147,7 +147,7 @@ namespace MovieManager.Core.Services
 		{
 
 			string javbusUrl = string.Format(_movieMagnetService.LoadMagSourceUrl(MagnetSource.Sukebei), movie.Number);
-			HtmlDocument htmlDocument = _htmlService.GetHtmlDocumentAsync(javbusUrl).Result;
+			HtmlDocument htmlDocument = _htmlService.GetHtmlDocumentAsync(javbusUrl, maxRetry:1).Result;
 			List<MovieMagnet> lstMovieMagnets = new List<MovieMagnet>();
 
 			if(htmlDocument != null)

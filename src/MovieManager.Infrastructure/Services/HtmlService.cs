@@ -23,10 +23,9 @@ namespace MovieManager.Infrastructure.Services
 			_commonSettings = commonSettings.Value;
 		}
 
-		public async Task<HtmlDocument> GetHtmlDocumentAsync(string requestUrl, Dictionary<string, string> headers = null)
+		public async Task<HtmlDocument> GetHtmlDocumentAsync(string requestUrl, Dictionary<string, string> headers = null, int maxRetry = 2)
 		{
 			int retry = 0;
-			int maxRetry = 2;
 			HtmlDocument doc = null;
 
 			while(retry <= maxRetry && doc == null)
@@ -55,7 +54,10 @@ namespace MovieManager.Infrastructure.Services
 					_logger?.LogError(ex, $"Error when requesting page: {requestUrl}");
 					retry++;
 					if(retry <= maxRetry)
+					{
+						Task.Delay(1000).Wait();
 						_logger?.LogInformation($"Retrying {retry}/{maxRetry} times");
+					}
 				}
 			}
 
