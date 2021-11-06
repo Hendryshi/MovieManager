@@ -16,6 +16,6 @@ namespace MovieManager.Core.Entities
 		public int IdMovie { get; set; }
 		public string DescHistory { get; set; }
 		public DateTime DtCreation { get; set; }
-		public bool IsActive { get; set; }
+		public bool IsActive { get; set; } = true;
 	}
 }

@@ -22,7 +22,7 @@ namespace MovieManager.Core.Entities
 		public DateTime? DtMagnet { get; set; }
 		public bool IsHD { get; set; }
 		public bool HasSub { get; set; }
-		public MagnetSource IdMagSource { get; set; }
+		public MagnetSource IdMagSource { get; set; } = MagnetSource.Javbus;
 		public DateTime? DtStart { get; set; }
 		public DateTime? DtFinish { get; set; }
 		public string SavePath { get; set; }

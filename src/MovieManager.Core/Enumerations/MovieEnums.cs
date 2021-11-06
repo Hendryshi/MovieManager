@@ -30,8 +30,7 @@ namespace MovieManager.Core.Enumerations
 
 	public enum MagnetSource : short
 	{
-		None = 0,
-		Javbus,
+		Javbus = 1,
 		Sukebei
 	}
 }

@@ -17,11 +17,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "tests\UnitTest
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{DEFB5E5E-E8DD-4D7B-AD67-566B6F3A15ED}"
 	ProjectSection(SolutionItems) = preProject
+		sql\StoredProcedures.sql = sql\StoredProcedures.sql
 		sql\Tables.sql = sql\Tables.sql
-		Views.sql = Views.sql
+		sql\Views.sql = sql\Views.sql
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionalTests", "tests\FunctionalTests\FunctionalTests.csproj", "{728C77CD-6E31-4924-A5BD-0347E3C2B2EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionalTests", "tests\FunctionalTests\FunctionalTests.csproj", "{728C77CD-6E31-4924-A5BD-0347E3C2B2EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

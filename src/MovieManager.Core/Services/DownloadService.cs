@@ -61,6 +61,7 @@ namespace MovieManager.Core.Services
 						{
 							_logger?.LogError("Cannot find movie {movieNumber} in path {moviePath}. Please check manually", magnet.MovieNumber, magnet.SavePath);
 							magnet.IdStatus = MagnetStatus.InError;
+							_movieMagnetService.SaveMovieMagnet(magnet);
 						}
 					}
 					else if(TorrentIsNotActive(magnet, torrentInfo))
@@ -68,9 +69,8 @@ namespace MovieManager.Core.Services
 						_logger?.LogWarning("MovieMagnet {magnetId} for movie {movieNumber} is no longer active, Mark it as dead", magnet.IdMovieMag, magnet.MovieNumber);
 						lstDeleteTorrentTask.Add(_qbittorrentService.DeleteTorrentAsync(magnet.Hash, true));
 						magnet.IdStatus = MagnetStatus.Dead;
+						_movieMagnetService.SaveMovieMagnet(magnet);
 					}
-
-					_movieMagnetService.SaveMovieMagnet(magnet);
 				}
 
 				Task.WaitAll(lstDeleteTorrentTask.ToArray());
@@ -142,6 +142,9 @@ namespace MovieManager.Core.Services
 
 		public bool TorrentIsNotActive(MovieMagnet magnet, TorrentInfo torrent)
 		{
+			if((DateTime.Now - magnet.DtStart.Value).Days >= 5)
+				return true;
+
 			return (DateTime.Now - magnet.DtStart.Value).Days > 2 && torrent.Progress < 0.5 && torrent.EstimatedTime.Value.Days >= 100;
 		}	
 

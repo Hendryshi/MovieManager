@@ -20,6 +20,7 @@ CREATE TABLE J_Movie
 	idStatus SMALLINT NOT NULL,
 	url NVARCHAR(500) NULL,
 	dtUpdate DATETIME NULL,
+	CONSTRAINT FK_J_Movie_IdStatus FOREIGN KEY (idStatus) REFERENCES D_MovieStatus(idStatus)
 )
 
 CREATE TABLE J_MovieRelation
@@ -39,7 +40,8 @@ CREATE TABLE J_Category
 	url NVARCHAR(500) NULL,
 	description NVARCHAR(500) NULL,
 	favLevel SMALLINT NULL DEFAULT(0),
-	dtUpdate DATETIME NULL
+	dtUpdate DATETIME NULL,
+	CONSTRAINT FK_J_Category_FavLevel FOREIGN KEY (favLevel) REFERENCES D_MovieFavLevel(idLevel)
 )
 
 CREATE TABLE J_Company
@@ -49,7 +51,8 @@ CREATE TABLE J_Company
 	url NVARCHAR(500) NULL,
 	description NVARCHAR(500) NULL,
 	favLevel SMALLINT NULL DEFAULT(0),
-	dtUpdate DATETIME NULL
+	dtUpdate DATETIME NULL,
+	CONSTRAINT FK_J_Company_FavLevel FOREIGN KEY (favLevel) REFERENCES D_MovieFavLevel(idLevel)
 )
 
 CREATE TABLE J_Director
@@ -59,7 +62,8 @@ CREATE TABLE J_Director
 	url NVARCHAR(500) NULL,
 	description NVARCHAR(500) NULL,
 	favLevel SMALLINT NULL DEFAULT(0),
-	dtUpdate DATETIME NULL
+	dtUpdate DATETIME NULL,
+	CONSTRAINT FK_J_Director_FavLevel FOREIGN KEY (favLevel) REFERENCES D_MovieFavLevel(idLevel)
 )
 
 CREATE TABLE J_Publisher
@@ -69,7 +73,8 @@ CREATE TABLE J_Publisher
 	url NVARCHAR(500) NULL,
 	description NVARCHAR(500) NULL,
 	favLevel SMALLINT NULL DEFAULT(0),
-	dtUpdate DATETIME NULL
+	dtUpdate DATETIME NULL,
+	CONSTRAINT FK_J_Publisher_FavLevel FOREIGN KEY (favLevel) REFERENCES D_MovieFavLevel(idLevel)
 )
 
 CREATE TABLE J_Actor
@@ -79,7 +84,8 @@ CREATE TABLE J_Actor
 	url NVARCHAR(500) NULL,
 	description NVARCHAR(500) NULL,
 	favLevel SMALLINT NULL DEFAULT(0),
-	dtUpdate DATETIME NULL
+	dtUpdate DATETIME NULL,
+	CONSTRAINT FK_J_Actor_FavLevel FOREIGN KEY (favLevel) REFERENCES D_MovieFavLevel(idLevel)
 )
 
 CREATE TABLE J_MovieMagnet(
@@ -100,7 +106,8 @@ CREATE TABLE J_MovieMagnet(
 	idStatus SMALLINT NOT NULL,
 	dtUpdate DATETIME NOT NULL,
 	CONSTRAINT FK_J_MovieMagnet_IdMoive FOREIGN KEY (idMovie) REFERENCES J_Movie(idMovie),
-	CONSTRAINT FK_MovieMagnet_IdMagSource FOREIGN KEY (idMagSource) REFERENCES D_MagnetSource(idMagSource)
+	CONSTRAINT FK_MovieMagnet_IdMagSource FOREIGN KEY (idMagSource) REFERENCES D_MagnetSource(idMagSource),
+	CONSTRAINT FK_J_MovieMagnet_IdStatus FOREIGN KEY (idStatus) REFERENCES D_MagnetStatus(idStatus)
 )
 
 CREATE TABLE J_MovieHistory(
@@ -129,7 +136,7 @@ CREATE TABLE D_MagnetSource
 )
 GO
 INSERT INTO D_MagnetSource(idMagSource, descMagSource)
-VALUES(1, 'https://www.javbus.com/{0}'), (2, 'https://sukebei.nyaa.si/')
+VALUES(1, 'https://www.javbus.com/{0}'), (2, 'https://sukebei.nyaa.si/?f=0&c=0_0&q={0}')
 
 
 CREATE TABLE D_MovieStatus

@@ -63,8 +63,9 @@ namespace MovieManager.Core.Services
 
 		public MovieMagnet FindBestMatchMagnetByMovie(Movie movie)
 		{
-			bool mustHasHD = movie.IdStatus == MovieStatus.Downloaded;
-			bool mustHasSub = (movie.IdStatus == MovieStatus.Downloaded || movie.IdStatus == MovieStatus.HasTorrent);
+			bool mustHasHD = (movie.IdStatus == MovieStatus.HasTorrent || movie.IdStatus == MovieStatus.Downloaded);
+			bool mustHasSub = movie.IdStatus == MovieStatus.Downloaded;
+
 			return _movieMagnetRepo.FindByBestMatch(movie.IdMovie, mustHasHD, mustHasSub);
 		}
 	}

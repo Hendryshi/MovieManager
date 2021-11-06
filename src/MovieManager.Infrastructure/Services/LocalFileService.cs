@@ -66,8 +66,12 @@ namespace MovieManager.Infrastructure.Services
 		{
 			_logger.LogInformation("Deleting folder {path}", path);
 			if(Directory.Exists(path))
+			{
 				await Task.Run(() => Directory.Delete(path, true));
-			_logger.LogInformation("Delete folder finished: {path}", path);
+				_logger.LogInformation("Delete folder finished: {path}", path);
+			}
+			else
+				_logger.LogWarning("Delete folder aborted. Cannot find path: {path}", path);
 		}
 
 		public void MoveDirectory(string sourcePath, string targetParentPath, bool deleteIfExist = true)

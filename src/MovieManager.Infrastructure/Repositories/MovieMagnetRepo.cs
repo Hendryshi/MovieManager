@@ -109,7 +109,7 @@ namespace MovieManager.Infrastructure.Repositories
 			if(mustHasSub)
 				sql.AppendLine("AND hasSub = 1");
 
-			sql.AppendLine("ORDER BY hasSub, isHD DESC, idMagSource ASC, size, dtMagnet DESC");
+			sql.AppendLine("ORDER BY hasSub DESC, isHD DESC, idMagSource ASC, size DESC, dtMagnet DESC");
 
 			return db.QuerySingleOrDefault<MovieMagnet>(sql.ToString(), new { idMovie = idMovie });
 		}

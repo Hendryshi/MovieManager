@@ -69,7 +69,7 @@ namespace MovieManager.Infrastructure.Repositories
 			sql.AppendLine(@"SELECT idMovie FROM vMovieInfo");
 			sql.AppendLine("WHERE (idFavLevel > 0 AND nbMag = 0) OR (idFavLevel > 2 AND hasSub = 0)");
 			sql.AppendLine("AND DATEADD(MONTH, 2, dtRelease) > GETDATE()");
-			sql.AppendLine("ORDER BY isUrgent, dtRelease DESC, hasSub, hasHD");
+			sql.AppendLine("ORDER BY isUrgent DESC, dtRelease DESC, hasSub, hasHD");
 			List<int> lstIdMovies = db.Query<int>(sql.ToString());
 			return lstIdMovies.Select(id => FindById(id)).ToList();
 		}
@@ -81,7 +81,7 @@ namespace MovieManager.Infrastructure.Repositories
 			sql.AppendLine("WHERE idMovie NOT IN (SELECT idMovie FROM J_MovieMagnet WHERE idStatus IN (2,4))");
 			sql.AppendLine("AND ((idStMovie = 3 AND idFavLevel = 3 AND hasSub = 1 AND hasHD = 1) OR (idStMovie = 2 AND idFavLevel > 1 AND hasHD = 1))");
 			sql.AppendLine("AND DATEADD(YEAR, 1, dtRelease) > GETDATE()");
-			sql.AppendLine("ORDER BY isUrgent, dtRelease, idStMovie DESC");
+			sql.AppendLine("ORDER BY isUrgent DESC, dtRelease DESC, idStMovie DESC");
 			List<int> lstIdMovies = db.Query<int>(sql.ToString());
 			return lstIdMovies.Select(id => FindById(id)).ToList();
 		}

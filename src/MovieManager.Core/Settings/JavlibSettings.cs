@@ -11,6 +11,8 @@ namespace MovieManager.Core.Settings
 		public string BaseAddress { get; set; }
 		public string Cloudflare { get; set; }
 		public string NewReleaseUrl { get; set; }
-
-    }
+		public int DownloadTorrentPoint { get; set; }
+		public int DownloadMoviePoint { get; set; }
+		public int DownloadSubPoint { get; set; }
+	}
 }

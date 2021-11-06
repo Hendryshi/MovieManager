@@ -145,11 +145,11 @@ namespace MovieManager.Core.Services
 					int? wantLevel = movie.NbWant + movie.NbWatched + movie.NbOwned;
 					if(wantLevel.HasValue)
 					{
-						if(wantLevel.Value >= 1500)
+						if(wantLevel.Value >= _javlibSettings.DownloadSubPoint)
 							movie.FavLevel = JavlibFavLevel.DlChineseSub;
-						else if(wantLevel.Value >= 1000)
+						else if(wantLevel.Value >= _javlibSettings.DownloadMoviePoint)
 							movie.FavLevel = JavlibFavLevel.DlMovie;
-						else if(wantLevel.Value >= 500)
+						else if(wantLevel.Value >= _javlibSettings.DownloadTorrentPoint)
 							movie.FavLevel = JavlibFavLevel.DlTorrent;
 					}
 
