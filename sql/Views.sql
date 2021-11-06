@@ -1,12 +1,14 @@
 ﻿GO
 CREATE VIEW vMovieFavLevel
 AS
-SELECT DISTINCT m.idMovie, m.number, CASE m.favlevel WHEN 0 THEN 0 ELSE (SELECT MAX(v) FROM (VALUES (m.favlevel), (a.favlevel), (c.favlevel)) AS VALUE(v)) END idFavLevel
+SELECT DISTINCT m.idMovie, m.number, CASE m.favlevel WHEN 0 THEN 0 ELSE (SELECT MAX(v) FROM (VALUES (m.favlevel), (a.favlevel), (c.favlevel), (p.favLevel)) AS VALUE(v)) END idFavLevel
 FROM J_Movie m
-LEFT JOIN J_MovieRelation ma ON m.idMovie = ma.idMovie AND ma.idTyRole = 5
-LEFT JOIN J_MovieRelation mc ON m.idMovie = mc.idMovie AND mc.idTyRole = 2
+LEFT JOIN J_MovieRelation ma ON m.idMovie = ma.idMovie AND ma.idTyRole = 5 --Actor
+LEFT JOIN J_MovieRelation mc ON m.idMovie = mc.idMovie AND mc.idTyRole = 2 --Company
+LEFT JOIN J_MovieRelation mp ON m.idMovie = mp.idMovie AND mp.idTyRole = 4 --Publisher
 LEFT JOIN J_Actor a ON a.idActor = ma.idRelation
 LEFT JOIN J_Company c ON c.idCompany = mc.idRelation
+LEFT JOIN J_Publisher p ON p.idPublisher = mp.idRelation
 GO
 
 GO

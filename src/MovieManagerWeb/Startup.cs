@@ -86,7 +86,13 @@ namespace MovieManagerWeb
 					pattern: "{controller=Home}/{action=Index}/{id?}");
 			});
 
-			app.UseHangfireDashboard();
+			app.UseHangfireDashboard("/jobs", new DashboardOptions
+			{
+				Authorization = new[]
+				{
+					new HangfireAuthorizationFilter("admin")
+				}
+			});
 			ConfigureHangfireJob(recurringJobManager, serviceProvider);
 		}
 

@@ -1,3 +1,53 @@
+CREATE TABLE D_MovieRoleType
+(
+	idTyRole SMALLINT NOT NULL PRIMARY KEY,
+	descTyRole NVARCHAR(200) NOT NULL
+)
+GO
+INSERT INTO D_MovieRoleType(idTyRole, descTyRole)
+VALUES(1, 'Category'), (2, 'Company'), (3, 'Director'), (4, 'Publisher'), (5, 'Star')
+
+
+CREATE TABLE D_MagnetSource
+(
+	idMagSource SMALLINT NOT NULL PRIMARY KEY,
+	descMagSource NVARCHAR(200) NOT NULL
+)
+GO
+INSERT INTO D_MagnetSource(idMagSource, descMagSource)
+VALUES(1, 'https://www.javbus.com/{0}'), (2, 'https://sukebei.nyaa.si/?f=0&c=0_0&q={0}')
+
+
+CREATE TABLE D_MovieStatus
+(
+	idStatus SMALLINT NOT NULL PRIMARY KEY,
+	descStatus NVARCHAR(200) NOT NULL
+)
+GO
+INSERT INTO D_MovieStatus(idStatus, descStatus)
+VALUES(0, 'NotScanned'), (1, 'Scanned'), (2, 'HasTorrent'), (3, 'Downloaded'), (4, 'Finished'), (5, 'InError')
+
+
+CREATE TABLE D_MagnetStatus
+(
+	idStatus SMALLINT NOT NULL PRIMARY KEY,
+	descStatus NVARCHAR(200) NOT NULL
+)
+GO
+INSERT INTO D_MagnetStatus(idStatus, descStatus)
+VALUES(0, 'Dead'), (1, 'IsReady'), (2, 'Downloading'), (3, 'Finished'), (4, 'InError'), (5, 'Archived')
+
+
+CREATE TABLE D_MovieFavLevel
+(
+	idLevel SMALLINT NOT NULL PRIMARY KEY,
+	descLevel NVARCHAR(200) NOT NULL
+)
+GO
+INSERT INTO D_MovieFavLevel(idLevel, descLevel)
+VALUES(0, 'NotInterest'), (1, 'DlTorrent'), (2, 'DlMovie'), (3, 'DlChineseSub')
+
+
 CREATE TABLE J_Movie
 (	
 	idMovie int IDENTITY(1,1) NOT NULL PRIMARY KEY,
@@ -119,51 +169,25 @@ CREATE TABLE J_MovieHistory(
 	CONSTRAINT FK_J_MovieHistory_IdMoive FOREIGN KEY (idMovie) REFERENCES J_Movie(idMovie),
 )
 
-CREATE TABLE D_MovieRoleType
-(
-	idTyRole SMALLINT NOT NULL PRIMARY KEY,
-	descTyRole NVARCHAR(200) NOT NULL
-)
-GO
-INSERT INTO D_MovieRoleType(idTyRole, descTyRole)
-VALUES(1, 'Category'), (2, 'Company'), (3, 'Director'), (4, 'Publisher'), (5, 'Star')
+-- Data Init To be updated
+begin tran
+update J_Company set favLevel = 3 where name = 'IDEA POCKET'
+update J_Company set favLevel = 2 where name = 'Attackers'
+update J_Company set favLevel = 3 where name = 'kawaii'
+update J_Company set favLevel = 3 where name = 'S1 NO.1 STYLE'
+update J_Publisher set favLevel = 3 where name = 'MOODYZ DIVA'
+update J_Publisher set favLevel = 3 where name = 'ABSOLUTELY WONDERFUL'
+commit
 
-
-CREATE TABLE D_MagnetSource
-(
-	idMagSource SMALLINT NOT NULL PRIMARY KEY,
-	descMagSource NVARCHAR(200) NOT NULL
-)
-GO
-INSERT INTO D_MagnetSource(idMagSource, descMagSource)
-VALUES(1, 'https://www.javbus.com/{0}'), (2, 'https://sukebei.nyaa.si/?f=0&c=0_0&q={0}')
-
-
-CREATE TABLE D_MovieStatus
-(
-	idStatus SMALLINT NOT NULL PRIMARY KEY,
-	descStatus NVARCHAR(200) NOT NULL
-)
-GO
-INSERT INTO D_MovieStatus(idStatus, descStatus)
-VALUES(0, 'NotScanned'), (1, 'Scanned'), (2, 'HasTorrent'), (3, 'Downloaded'), (4, 'Finished'), (5, 'InError')
-
-
-CREATE TABLE D_MagnetStatus
-(
-	idStatus SMALLINT NOT NULL PRIMARY KEY,
-	descStatus NVARCHAR(200) NOT NULL
-)
-GO
-INSERT INTO D_MagnetStatus(idStatus, descStatus)
-VALUES(0, 'Dead'), (1, 'IsReady'), (2, 'Downloading'), (3, 'Finished'), (4, 'InError'), (5, 'Archived')
-
-
-CREATE TABLE D_MovieFavLevel
-(
-	idLevel SMALLINT NOT NULL PRIMARY KEY,
-	descLevel NVARCHAR(200) NOT NULL
-)
-GO
-INSERT INTO D_MovieFavLevel(idLevel, descLevel)
-VALUES(0, 'NotInterest'), (1, 'DlTorrent'), (2, 'DlMovie'), (3, 'DlChineseSub')
+begin tran
+update J_Actor set favLevel = 3 where name = '竹内夏希'
+update J_Actor set favLevel = 3 where name = '初川みなみ'
+update J_Actor set favLevel = 3 where name = '花沢ひまり'
+update J_Actor set favLevel = 3 where name = '葵司'
+update J_Actor set favLevel = 3 where name = '美谷朱里'
+update J_Actor set favLevel = 3 where name = '明里つむぎ'
+update J_Actor set favLevel = 3 where name = '香水じゅん'
+update J_Actor set favLevel = 3 where name = '涼森れむ'
+update J_Actor set favLevel = 3 where name = '神宮寺ナオ'
+update J_Actor set favLevel = 3 where name = '藍芽みずき'
+commit
