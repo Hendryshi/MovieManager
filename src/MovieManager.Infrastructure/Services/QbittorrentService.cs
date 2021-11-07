@@ -68,7 +68,7 @@ namespace MovieManager.Infrastructure.Services
 			await EnsureLoggedInAsync();
 			AddTorrentUrlsRequest request = new AddTorrentUrlsRequest(new Uri(magnet.MagnetUrl));
 			await _client.AddTorrentsAsync(request);
-			string savePath = Path.Combine(_qbittorrentSetting.DownloadRootPath, magnet.MovieNumber + "_" + magnet.IdMovieMag);
+			string savePath = Path.Combine(_qbittorrentSetting.DownloadRootPath, magnet.MovieNumber.ToUpper() + "_" + magnet.IdMovieMag);
 			await _client.SetLocationAsync(magnet.Hash, savePath);
 			await _client.SetTorrentCategoryAsync(magnet.Hash, _qbittorrentSetting.Category);
 

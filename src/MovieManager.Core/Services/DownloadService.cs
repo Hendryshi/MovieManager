@@ -52,7 +52,7 @@ namespace MovieManager.Core.Services
 					TorrentInfo torrentInfo = _qbittorrentService.GetTorrentInfo(magnet.Hash);
 					if(torrentInfo == null || torrentInfo.State == TorrentState.Uploading || torrentInfo.Progress >= 1)
 					{
-						if(_localFileService.CheckMovieDownloaded(magnet.SavePath, magnet.MovieNumber))
+						if(_localFileService.CheckMovieDownloaded(magnet.SavePath, magnet.MovieNumber.ToUpper()))
 						{
 							_logger?.LogInformation("MovieMagnet {magnetId} for movie {movieNumber} has finished downloading", magnet.IdMovieMag, magnet.MovieNumber);
 							lstGenerateMovieFileTask.Add(TreatDownloadedMovie(magnet));

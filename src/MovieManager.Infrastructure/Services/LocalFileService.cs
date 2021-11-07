@@ -36,7 +36,7 @@ namespace MovieManager.Infrastructure.Services
 
 			if(movieFile != null)
 			{
-				string movieNameWithoutExt = magnet.MovieNumber + (magnet.HasSub ? "-C" : "");
+				string movieNameWithoutExt = magnet.MovieNumber.ToUpper() + (magnet.HasSub ? "-C" : "");
 				string destMovieName = movieNameWithoutExt + Path.GetExtension(movieFile.FullName);
 
 				string destMovieFolder = Path.Combine(_localFileSetting.DestSaveRootPath, movieNameWithoutExt);

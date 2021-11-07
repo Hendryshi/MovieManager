@@ -90,7 +90,7 @@ namespace MovieManager.Core.Services
 					{
 						var titlePath = "//h3[@class='post-title text']";
 						var titleNode = htmlDocument.DocumentNode.SelectSingleNode(titlePath).InnerText.Trim();
-						var number = titleNode.Substring(0, titleNode.IndexOf(" "));
+						var number = titleNode.Substring(0, titleNode.IndexOf(" ")).ToUpper();
 						var title = titleNode.Substring(titleNode.IndexOf(" ") + 1).ReplaceInvalidChar();
 
 						var picPath = "//img[@id='video_jacket_img']";
@@ -256,7 +256,7 @@ namespace MovieManager.Core.Services
 							var urlAndTitle = node.ChildNodes[0];
 							if(urlAndTitle != null && urlAndTitle.ChildNodes.Count >= 3)
 							{
-								var number = urlAndTitle.ChildNodes[0].InnerText.Trim();
+								var number = urlAndTitle.ChildNodes[0].InnerText.Trim().ToUpper();
 								var thumbnail = urlAndTitle.ChildNodes[1].Attributes["src"].Value;
 								thumbnail = thumbnail.StartsWith("http") ? thumbnail : "http:" + thumbnail;
 								var name = urlAndTitle.ChildNodes[2].InnerText.Trim().ReplaceInvalidChar();
