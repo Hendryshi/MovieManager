@@ -61,10 +61,12 @@ namespace MovieManager.Core.Services
 					if(lstMovieCurrentPage.Count > 0)
 					{
 						_logger?.LogInformation("Treating {pageCount} movies in page {currentPage}", lstMovieCurrentPage.Count, currentPage);
-						foreach(Movie movie in lstMovieCurrentPage.GroupBy(x => x.Number.ToLower()).Select(x => x.First()))
+						foreach(Movie movie in lstMovieCurrentPage.GroupBy(x => x.Number.ToUpper()).Select(x => x.First()))
 						{
 							ScanMovieDetails(new UrlInfo() { EntryType = JavlibEntryType.Movie, ExactUrl = movie.Url }, movie);
 							_movieService.UpdateStatus(movie, MovieStatus.Scanned);
+							if(lstMovieCurrentPage.FindAll(c => c.Number == movie.Number).Count > 1)
+								movie.NbWant += _javlibSettings.DownloadTorrentPoint;
 							_movieService.SaveMovie(movie);
 						}
 					}

@@ -107,7 +107,7 @@ namespace MovieManager.Infrastructure.Services
 				return null;
 
 			List<string> lstFiles = Directory.GetFiles(rootPath, "*.*", SearchOption.AllDirectories).ToList();
-			List<FileInfo> lstMediaFiles = lstFiles.Where(x => x.EndsWith("mp4")).Select(f => new FileInfo(f)).ToList();
+			List<FileInfo> lstMediaFiles = lstFiles.Where(x => x.EndsWith("mp4") || x.EndsWith("mkv")).Select(f => new FileInfo(f)).ToList();
 
 			return lstMediaFiles.Where(x => x.Name.Contains(numericInMovie)).OrderByDescending(f => f.Length).FirstOrDefault();
 		}
