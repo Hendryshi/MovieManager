@@ -77,23 +77,27 @@ namespace MovieManager.Core.Services
 				Task.WaitAll(lstGenerateMovieFileTask.ToArray());
 
 				//Send torrent to qbittorrent for the top nbFinished
-				int nbMovieAddMax = _qbittorrentService.GetTorrentCanAddCount();
-				foreach(Movie movie in _movieService.LoadMoviesToDownload())
+				List<Movie> lstMoviesToDownload = _movieService.LoadMoviesToDownload();
+				if(lstMoviesToDownload.Count > 0)
 				{
-					if(nbMovieAdded >= nbMovieAddMax)
-						break;
-
-					MovieMagnet magnet = _movieMagnetService.FindBestMatchMagnetByMovie(movie);
-					if(magnet != null)
+					int nbMovieAddMax = _qbittorrentService.GetTorrentCanAddCount();
+					foreach(Movie movie in lstMoviesToDownload)
 					{
-						//TODO: Here we can add antoher async function to get the torrentContent and set other files priority to notDownload
-						lstAddTorrentTask.Add(_qbittorrentService.AddTorrentAsync(magnet)
-												.ContinueWith(t => _movieMagnetService.SaveMovieMagnet(magnet)));
-						nbMovieAdded++;
-					}
-				}
+						if(nbMovieAdded >= nbMovieAddMax)
+							break;
 
-				Task.WaitAll(lstAddTorrentTask.ToArray());
+						MovieMagnet magnet = _movieMagnetService.FindBestMatchMagnetByMovie(movie);
+						if(magnet != null)
+						{
+							//TODO: Here we can add antoher async function to get the torrentContent and set other files priority to notDownload
+							lstAddTorrentTask.Add(_qbittorrentService.AddTorrentAsync(magnet)
+													.ContinueWith(t => _movieMagnetService.SaveMovieMagnet(magnet)));
+							nbMovieAdded++;
+						}
+					}
+
+					Task.WaitAll(lstAddTorrentTask.ToArray());
+				}
 			}
 			catch(Exception ex)
 			{

@@ -66,7 +66,7 @@ namespace MovieManager.Core.Services
 							ScanMovieDetails(new UrlInfo() { EntryType = JavlibEntryType.Movie, ExactUrl = movie.Url }, movie);
 							_movieService.UpdateStatus(movie, MovieStatus.Scanned);
 							if(lstMovieCurrentPage.FindAll(c => c.Number == movie.Number).Count > 1)
-								movie.NbWant += _javlibSettings.DownloadTorrentPoint;
+								movie.FavLevel = JavlibFavLevel.DlChineseSub;
 							_movieService.SaveMovie(movie);
 						}
 					}
@@ -149,9 +149,9 @@ namespace MovieManager.Core.Services
 					{
 						if(wantLevel.Value >= _javlibSettings.DownloadSubPoint)
 							movie.FavLevel = JavlibFavLevel.DlChineseSub;
-						else if(wantLevel.Value >= _javlibSettings.DownloadMoviePoint)
+						else if(wantLevel.Value >= _javlibSettings.DownloadMoviePoint && movie.FavLevel != JavlibFavLevel.DlChineseSub)
 							movie.FavLevel = JavlibFavLevel.DlMovie;
-						else if(wantLevel.Value >= _javlibSettings.DownloadTorrentPoint)
+						else if(wantLevel.Value >= _javlibSettings.DownloadTorrentPoint && movie.FavLevel != JavlibFavLevel.DlChineseSub && movie.FavLevel != JavlibFavLevel.DlMovie)
 							movie.FavLevel = JavlibFavLevel.DlTorrent;
 					}
 
