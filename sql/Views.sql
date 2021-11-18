@@ -1,7 +1,10 @@
 ﻿GO
 CREATE VIEW vMovieFavLevel
 AS
-SELECT DISTINCT m.idMovie, m.number, CASE MAX(m.favlevel) WHEN 0 THEN 0 ELSE (SELECT MAX(v) FROM (VALUES (MAX(m.favlevel)), (MAX(a.favlevel)), (MAX(c.favlevel)), (MAX(p.favLevel))) AS VALUE(v)) END idFavLevel
+SELECT DISTINCT m.idMovie, m.number
+		, CASE WHEN MAX(m.favlevel) = 0 AND MAX(CAST(m.isUrgent AS INT)) = 0 THEN 0
+		  ELSE (SELECT MAX(v) FROM (VALUES (MAX(m.favlevel)), (MAX(a.favlevel)), (MAX(c.favlevel)), (MAX(p.favLevel))) AS VALUE(v)) 
+		END idFavLevel
 FROM J_Movie m
 LEFT JOIN J_MovieRelation ma ON m.idMovie = ma.idMovie AND ma.idTyRole = 5 --Actor
 LEFT JOIN J_MovieRelation mc ON m.idMovie = mc.idMovie AND mc.idTyRole = 2 --Company

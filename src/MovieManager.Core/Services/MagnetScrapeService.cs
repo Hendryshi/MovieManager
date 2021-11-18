@@ -118,7 +118,7 @@ namespace MovieManager.Core.Services
 								if(node.ChildNodes[1].InnerText.Contains("高清"))
 									movieMagnet.IsHD = true;
 
-								if(node.ChildNodes[1].InnerText.Contains("字幕"))
+								if(node.ChildNodes[1].InnerText.Contains("字幕") && movieMagnet.IsHD)
 									movieMagnet.HasSub = true;
 
 								movieMagnet.MagName = node.ChildNodes[1].ChildNodes[1].InnerText.Trim();
@@ -178,7 +178,7 @@ namespace MovieManager.Core.Services
 						if(movieMagnet.MagName.Contains("高清") || movieMagnet.MagName.ToLower().Contains("hd") || movieMagnet.Size > 2048)
 							movieMagnet.IsHD = true;
 
-						if(movieMagnet.MagName.Contains("字幕") || movieMagnet.MagName.Contains("中文"))
+						if(movieMagnet.MagName.Contains("字幕") || movieMagnet.MagName.Contains("中文") && movieMagnet.IsHD)
 							movieMagnet.HasSub = true;
 
 						lstMovieMagnets.Add(movieMagnet);
