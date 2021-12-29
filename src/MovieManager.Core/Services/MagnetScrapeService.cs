@@ -110,6 +110,7 @@ namespace MovieManager.Core.Services
 					HtmlNodeCollection nodes = magDocument.DocumentNode.SelectNodes(magPattern);
 					if(nodes != null)
 					{
+						DateTime? lastDtReleaseInNode = null;
 						foreach(var node in nodes)
 						{
 							MovieMagnet movieMagnet = new MovieMagnet() { IdMovie = movie.IdMovie, MovieNumber = movie.Number, IdMagSource = MagnetSource.Javbus };
@@ -132,10 +133,22 @@ namespace MovieManager.Core.Services
 								movieMagnet.Size = sizePart.GetByteSize();
 							}
 
-							if(node.ChildNodes.Count >= 5)
+							if(node.ChildNodes.Count >= 5 && !string.Equals(node.ChildNodes[5].InnerText.Trim(), "0000-00-00"))
+							{
 								movieMagnet.DtMagnet = DateTime.Parse(node.ChildNodes[5].InnerText.Trim());
+								if(!lastDtReleaseInNode.HasValue || movieMagnet.DtMagnet < lastDtReleaseInNode)
+									lastDtReleaseInNode = movieMagnet.DtMagnet;
+							}else
+								movieMagnet.HasSub = false;
 
 							lstMovieMagnets.Add(movieMagnet);
+						}
+
+						//JavBus Bug: The movie is not a SubVersion but has a Sub tag
+						foreach(MovieMagnet mag in lstMovieMagnets)
+						{
+							if(mag.DtMagnet.HasValue && (mag.DtMagnet.Value - lastDtReleaseInNode.Value).Days < 3)
+								mag.HasSub = false;
 						}
 					}
 				}

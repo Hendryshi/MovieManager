@@ -30,7 +30,7 @@ namespace UnitTests
 		[Fact]
 		public void TestInsertMovie()	
 		{
-			var movie = new Movie() { Number = "CAWD-1236", Category = "Cat1, Cat2" };
+			var movie = new Movie() { Number = "MIDV-002", Category = "Cat1, Cat2" };
 			movie.MovieRelations =  new List<MovieRelation>() { 
 				new MovieRelation() { IdTyRole = JavlibRoleType.Director, IdRelation = 300 }, 
 				new MovieRelation() { IdTyRole = JavlibRoleType.Company, IdRelation = 300 } };

@@ -176,6 +176,7 @@ update J_Company set favLevel = 2 where name = 'Attackers'
 update J_Company set favLevel = 3 where name = 'kawaii'
 update J_Company set favLevel = 3 where name = 'S1 NO.1 STYLE'
 update J_Company set favLevel = 3 where name = 'SOD Create'
+update J_Company set favLevel = 3 where name = '¥×¥ì¥ß¥¢¥à' --PRED
 update J_Publisher set favLevel = 3 where name = 'MOODYZ DIVA'
 update J_Publisher set favLevel = 3 where name = 'ABSOLUTELY WONDERFUL'
 commit
@@ -215,4 +216,5 @@ update J_Actor set favLevel = 3 where name = '¶þŒm¤Ò¤«¤ê'
 update J_Actor set favLevel = 3 where name = '°×Ûà¤ß¤¢¤ó'
 update J_Actor set favLevel = 3 where name = 'Ð¡Ò°ÇÙ¹­'
 update J_Actor set favLevel = 3 where name = 'Éñ²ËÃÀ¤Þ¤¤'
+update J_Actor set favLevel = 3 where name = 'ÌÒˆ@Á¯ÄÎ'
 commit

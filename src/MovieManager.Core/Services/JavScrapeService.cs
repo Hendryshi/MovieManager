@@ -78,6 +78,33 @@ namespace MovieManager.Core.Services
 			_logger?.LogInformation("************** Scraping New Released Movies Job End - {Date} **************", DateTime.Now.ToString("u", DateTimeFormatInfo.InvariantInfo));
 		}
 
+		public List<Movie> ScrapreMoviesByActor(string actorName)
+		{
+			List<Movie> lstMovies = new List<Movie>();
+			Actor actor = _actorService.FindActorByName(actorName);
+
+			UrlInfo urlInfo = new UrlInfo() { EntryType = JavlibEntryType.Actress, ExactUrl = actor.Url };
+			int pageCount = GetPageCount(urlInfo);
+
+			if(pageCount > 0)
+			{
+				_logger?.LogInformation($"Found {pageCount} pages. Now scanning movies on each page");
+				for(int currentPage = 1; currentPage <= pageCount; currentPage++)
+				{
+					List<Movie> lstMovieCurrentPage = ScanPageList(new UrlInfo { EntryType = JavlibEntryType.Actress, ExactUrl = actor.Url, Page = currentPage }).GroupBy(x => x.Url).Select(x => x.First()).ToList();
+					if(lstMovieCurrentPage.Count > 0)
+					{
+						_logger?.LogInformation("Treating {pageCount} movies in page {currentPage}", lstMovieCurrentPage.Count, currentPage);
+						foreach(Movie movie in lstMovieCurrentPage.GroupBy(x => x.Number.ToUpper()).Select(x => x.First()))
+						{
+							ScanMovieDetails(new UrlInfo() { EntryType = JavlibEntryType.Movie, ExactUrl = movie.Url }, movie);
+						}
+						lstMovies.AddRange(lstMovieCurrentPage);
+					}
+				}
+			}
+			return lstMovies;
+		}
 
 		//TDOO: Update to exclude multiple actor, vr, 4h and over
 		public void ScanMovieDetails(UrlInfo urlInfo, Movie movie)
@@ -286,15 +313,22 @@ namespace MovieManager.Core.Services
 		private string GetJavLibraryUrl(UrlInfo urlInfo)
 		{
 			string result = string.Empty;
+			string mode = string.Empty;
+			string page = string.Empty;
 			switch(urlInfo.EntryType)
 			{
 				case JavlibEntryType.NewRelease:
-					string mode = urlInfo.Mode.HasValue ? urlInfo.Mode.Value.ToString() : "";
-					string page = urlInfo.Page.HasValue ? urlInfo.Page.Value.ToString() : "1";
+					mode = urlInfo.Mode.HasValue ? urlInfo.Mode.Value.ToString() : "";
+					page = urlInfo.Page.HasValue ? urlInfo.Page.Value.ToString() : "1";
 					result = _javlibSettings.NewReleaseUrl + "?&mode=" + mode + "&page=" + page;
 					break;
 				case JavlibEntryType.Movie:
 					result = _javlibSettings.BaseAddress + urlInfo.ExactUrl;
+					break;
+				case JavlibEntryType.Actress:
+					mode = urlInfo.Mode.HasValue ? urlInfo.Mode.Value.ToString() : "";
+					page = urlInfo.Page.HasValue ? urlInfo.Page.Value.ToString() : "1";
+					result = _javlibSettings.BaseAddress + urlInfo.ExactUrl + "&mode=" + mode + "&page=" + page;
 					break;
 				case JavlibEntryType.Other:
 					result = urlInfo.ExactUrl;

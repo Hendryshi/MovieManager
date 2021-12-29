@@ -47,14 +47,14 @@ namespace UnitTests
 		[Fact]
 		public void TestScrapeMovieMagnet()
 		{
-			Movie movie = new Movie() { IdMovie = 1492, Number = "miaa-506" };
+			Movie movie = new Movie() { IdMovie = 842, Number = "midv-002" };
 			_magnetScrapeService.ScrapeMovieMagnet(movie);
 		}
 		
 		[Fact]
 		public void TestSearchMagnetFromSukebei()
 		{
-			Movie movie = new Movie() { IdMovie = 1492, Number = "ipx-486" };
+			Movie movie = new Movie() { IdMovie = 1052, Number = "ipx-486" };
 			_magnetScrapeService.SearchMagnetFromSukebei(movie).ForEach(m => _output.WriteLine($"Size: {m.Size}, isHD: {m.IsHD}, Sub: {m.HasSub} "));
 		}
 

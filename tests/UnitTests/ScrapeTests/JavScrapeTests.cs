@@ -11,6 +11,7 @@ using MovieManager.Infrastructure.Services;
 using MovieManager.Infrastructure.Logging;
 using System.Collections.Generic;
 using Xunit.Abstractions;
+using System.Linq;
 
 namespace UnitTests
 {
@@ -87,6 +88,16 @@ namespace UnitTests
 		public void TestScrapeNewReleasedMovie()
 		{
 			_javScrapeService.ScrapeNewReleasedMovie();
+		}
+
+		[Fact]
+		public void TestScrapeMoviesByActor()
+		{
+			string name = "±¾Ìïáµ";
+			List<Movie> movies = _javScrapeService.ScrapreMoviesByActor(name);
+
+			List<Movie> results = movies.OrderByDescending(x => x.NbOwned + x.NbWant + x.NbWatched).Take(20).ToList();
+			results.ForEach(x => _output.WriteLine($"{x.Number}: {x.NbOwned + x.NbWant + x.NbWatched}"));
 		}
 	}
 }
