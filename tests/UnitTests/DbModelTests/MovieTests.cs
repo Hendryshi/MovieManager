@@ -35,7 +35,7 @@ namespace UnitTests
 				new MovieRelation() { IdTyRole = JavlibRoleType.Director, IdRelation = 300 }, 
 				new MovieRelation() { IdTyRole = JavlibRoleType.Company, IdRelation = 300 } };
 
-			var movieInserted = _movieService.SaveMovie(movie);
+			var movieInserted = _movieService.SaveMovie(movie, true);
 			Assert.True(movieInserted.IdMovie > 0);
 		}
 
@@ -77,7 +77,7 @@ namespace UnitTests
 			movie.MovieRelations.Add(new MovieRelation() { IdMovie = idMovie, IdTyRole = JavlibRoleType.Director, IdRelation = 500 });
 			movie.MovieRelations.RemoveAt(1);
 
-			_movieService.SaveMovie(movie);
+			_movieService.SaveMovie(movie, true);
 			
 			var movieModified = _movieService.FindMovieById(idMovie);
 			Assert.Equal("title modified", movie.Title);

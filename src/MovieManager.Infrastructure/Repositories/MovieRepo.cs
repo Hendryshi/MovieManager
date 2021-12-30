@@ -24,7 +24,7 @@ namespace MovieManager.Infrastructure.Repositories
 			_movieHistoryRepo = movieHistoryRepo;
 		}
 
-		public Movie Save(Movie movie)
+		public Movie Save(Movie movie, bool updateRelation)
 		{
 			movie.DtUpdate = DateTime.Now;
 
@@ -36,7 +36,9 @@ namespace MovieManager.Infrastructure.Repositories
 				else if(!db.UpdateEntity(movie))
 					throw new Exception($"Movie not found in DB: {movie.ToString()}");
 
-				_movieRelationRepo.SaveAllRelations(movie.IdMovie, movie.MovieRelations);
+				if(updateRelation)
+					_movieRelationRepo.SaveAllRelations(movie.IdMovie, movie.MovieRelations);
+
 				_movieHistoryRepo.SaveList(movie.IdMovie, movieHistories);
 				trans.Complete();
 			}

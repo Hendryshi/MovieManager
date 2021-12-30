@@ -67,7 +67,7 @@ namespace MovieManager.Core.Services
 							_movieService.UpdateStatus(movie, MovieStatus.Scanned);
 							if(lstMovieCurrentPage.FindAll(c => c.Number == movie.Number).Count > 1)
 								movie.FavLevel = JavlibFavLevel.DlChineseSub;
-							_movieService.SaveMovie(movie);
+							_movieService.SaveMovie(movie, true);
 						}
 					}
 				}

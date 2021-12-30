@@ -13,6 +13,6 @@ namespace MovieManager.Core.Interfaces
 		Movie FindByNumber(string movieNbr);
 		List<Movie> LoadMoviesToDownload();
 		List<Movie> LoadMoviesToScrapeMagnet();
-		Movie Save(Movie movie);
+		Movie Save(Movie movie, bool updateRelation);
 	}
 }

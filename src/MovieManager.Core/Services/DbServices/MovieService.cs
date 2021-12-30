@@ -21,9 +21,9 @@ namespace MovieManager.Core.Services
 			_logger = logger;
 		}
 
-		public Movie SaveMovie(Movie movie)
+		public Movie SaveMovie(Movie movie, bool updateRelation = false)
 		{
-			return _movieRepository.Save(movie);
+			return _movieRepository.Save(movie, updateRelation);
 		}
 
 		public Movie UpdateStatus(Movie movie, MovieStatus newStatus)
