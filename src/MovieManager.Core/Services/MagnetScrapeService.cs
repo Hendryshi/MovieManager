@@ -191,7 +191,7 @@ namespace MovieManager.Core.Services
 						if(movieMagnet.MagName.Contains("高清") || movieMagnet.MagName.ToLower().Contains("hd") || movieMagnet.Size > 2048)
 							movieMagnet.IsHD = true;
 
-						if(movieMagnet.MagName.Contains("字幕") || movieMagnet.MagName.Contains("中文") && movieMagnet.IsHD)
+						if((movieMagnet.MagName.Contains("字幕") || movieMagnet.MagName.Contains("中文")) && movieMagnet.IsHD)
 							movieMagnet.HasSub = true;
 
 						lstMovieMagnets.Add(movieMagnet);
