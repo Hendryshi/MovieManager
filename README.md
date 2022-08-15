@@ -7,7 +7,7 @@ Two jobs was created to perfom the daily tasks.
 
 
 ## Technical used
-- .Net Core, Sql Server, Hangfire jobs, Dapper
+- .Net Core, Sql Server, Hangfire jobs, Dapper, qbittorrent web api
 
 
 ## Daily background jobs
