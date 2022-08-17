@@ -2,7 +2,7 @@
 
 ## Context
 
-A .Net Core application which will collect the new released movies from the website to local data sources, and download certain movies to NAS driver.
+A .Net Core application which will collect the new released movies from the Javlibrary to local data sources, and download certain movies to NAS driver.
 Two jobs was created to perfom the daily tasks.
 
 
