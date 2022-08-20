@@ -20,9 +20,7 @@ Two jobs was created to perfom the daily tasks.
 - Job Download (Daily mode)
 
   - This job will be launched continually (every 30 mins) to download the movies and put them to the correct place in NAS driver
-
   - Monitor the current downloading torrent in application qbittorrent
-
   - If download finished, create the folder in NAS driver and move the movie to the folder
 
 
