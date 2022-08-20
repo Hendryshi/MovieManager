@@ -1,0 +1,20 @@
+Add:
+    {
+		"Name": "EmailCustom",
+		"Args": {
+			"fromEmail": "yejia.shi@hotmail.com",
+			"toEmail": "yejia.shi@hotmail.com",
+			"enableSsl": "false",
+			"mailSubject": "MovieManager Error Message",
+			"isBodyHtml": "true",
+			"mailServer": "smtp-mail.outlook.com",
+			"networkCredentialuserName": "yejia.shi@hotmail.com",
+			"networkCredentialpassword": "******",
+			"smtpPort": 587,
+			"outputTemplate": "[{Timestamp:G} [{Level:u3}] ({SourceContext} {ThreadId}) {Message}{NewLine}{Exception}",
+			"batchPostingLimit": 10,
+			"periodMinutes": 1,
+			"restrictedToMinimumLevel": "Warning"
+		}
+	}
+under "Serilog/WriteTo" element

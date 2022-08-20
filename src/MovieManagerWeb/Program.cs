@@ -5,9 +5,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Configuration;
 using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MovieManagerWeb
 {
@@ -21,6 +18,8 @@ namespace MovieManagerWeb
 				.AddJsonFile("appsettings.json", optional:false, reloadOnChange:true)
 				.AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
 				.Build();
+
+			Serilog.Debugging.SelfLog.Enable(Console.Out);
 
 			Log.Logger = new LoggerConfiguration()
 				.ReadFrom.Configuration(configuration)

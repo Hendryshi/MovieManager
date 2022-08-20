@@ -25,6 +25,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{DEFB5E5E-E8D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionalTests", "tests\FunctionalTests\FunctionalTests.csproj", "{728C77CD-6E31-4924-A5BD-0347E3C2B2EB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "release", "release", "{4366950C-8F27-4CA0-853E-FA1297ACE0D0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "v1.0.1", "v1.0.1", "{FFB5F8E2-BC15-40BD-B509-6947EF16A37E}"
+	ProjectSection(SolutionItems) = preProject
+		release\v1.0.1\config.txt = release\v1.0.1\config.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +68,7 @@ Global
 		{5BA86BF5-8D4B-4259-9FD3-D817ED96132C} = {DCA80FE4-0514-4AFD-9C6B-248ADC312079}
 		{52746991-A09B-4F2B-8224-82AE0E555226} = {6010E1CE-EDC1-48F9-8963-38822307ECCC}
 		{728C77CD-6E31-4924-A5BD-0347E3C2B2EB} = {6010E1CE-EDC1-48F9-8963-38822307ECCC}
+		{FFB5F8E2-BC15-40BD-B509-6947EF16A37E} = {4366950C-8F27-4CA0-853E-FA1297ACE0D0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7FF58C3B-AFF1-4A0E-85ED-20451F708336}
