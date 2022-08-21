@@ -9,7 +9,7 @@ namespace MovieManager.Core.Interfaces
 {
 	public interface ICompanyService
 	{
-		Company FinCompanyByName(string name, string url = "");
+		Company FindCompanyByName(string name, string url = "");
 		Company FindCompanyById(int idCompany);
 		Company SaveCompany(Company company);
 	}

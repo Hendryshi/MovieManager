@@ -9,7 +9,7 @@ using Moq;
 
 namespace UnitTests.Builders
 {
-	class JavlibSettingBuilder
+	public class JavlibSettingBuilder
 	{
 		private Mock<IOptionsSnapshot<JavlibSettings>> _mockJavlibSetting;
 
@@ -23,7 +23,8 @@ namespace UnitTests.Builders
 				NewReleaseUrl = "http://www.javlibrary.com/cn/vl_newrelease.php",
 				DownloadTorrentPoint = 500,
 				DownloadMoviePoint = 1000,
-				DownloadSubPoint = 1200
+				DownloadSubPoint = 1200,
+				UpdatePointMaxDay = 6
 			};
 
 			_mockJavlibSetting.Setup(ap => ap.Value).Returns(setting);

@@ -9,7 +9,7 @@ using Moq;
 
 namespace UnitTests.Builders
 {
-	class qbittorrentSettingBuilder
+	public class qbittorrentSettingBuilder
 	{
 		private Mock<IOptionsSnapshot<QbittorrentSettings>> _mockQbittorrentSetting;
 

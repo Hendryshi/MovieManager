@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using Xunit.Abstractions;
 using System.Linq;
 
-namespace UnitTests
+namespace FunctionalTests
 {
 	public class JavScrapeTests
 	{
@@ -113,11 +113,20 @@ namespace UnitTests
 			_output.WriteLine(movie.ToString());
 		}
 
-		//TODO: This should be placed in Functional Tests
 		[Fact]
 		public void TestScrapeNewReleasedMovie()
 		{
 			_javScrapeService.ScrapeNewReleasedMovie();
+		}
+
+		[Fact]
+		public void Test_Update_Movie_Point()
+		{	
+			_javScrapeService.ScrapeMoviePoints();
+			
+			List<Movie> moviesUpdated = _movieService.FindMovieByCriteria(dtReleaseMin: DateTime.Today.AddDays(-6));
+			
+			Assert.Empty(moviesUpdated.FindAll(m => m.DtUpdate < DateTime.Today));
 		}
 
 		[Fact]
@@ -138,8 +147,6 @@ namespace UnitTests
 
 			List<Movie> results = movies.OrderByDescending(x => x.NbOwned + x.NbWant + x.NbWatched).Take(20).ToList();
 			//results.ForEach(x => _output.WriteLine($"{x.Number}: {x.NbOwned + x.NbWant + x.NbWatched}"));
-
-
 		}
 	}
 }

@@ -9,7 +9,7 @@ using Moq;
 
 namespace UnitTests.Builders
 {
-	class CommonSettingBuilder
+	public class CommonSettingBuilder
 	{
 		private Mock<IOptionsSnapshot<CommonSettings>> _mock;
 

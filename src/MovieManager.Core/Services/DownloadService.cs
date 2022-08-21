@@ -101,11 +101,11 @@ namespace MovieManager.Core.Services
 			}
 			catch(Exception ex)
 			{
-				_logger.LogError(ex, "Some errors occurred in MonitorMovieDownload");
+				_logger?.LogError(ex, "Some errors occurred in MonitorMovieDownload");
 			}
 			finally
 			{
-				_logger.LogInformation("************** Monitoring Movie Download Job End - {Date} **************", DateTime.Now.ToString("u", DateTimeFormatInfo.InvariantInfo));
+				_logger?.LogInformation("************** Monitoring Movie Download Job End - {Date} **************", DateTime.Now.ToString("u", DateTimeFormatInfo.InvariantInfo));
 			}
 		}
 

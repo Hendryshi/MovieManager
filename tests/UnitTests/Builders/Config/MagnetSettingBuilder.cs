@@ -9,7 +9,7 @@ using Moq;
 
 namespace UnitTests.Builders
 {
-	class MagnetSettingBuilder
+	public class MagnetSettingBuilder
 	{
 		private Mock<IOptionsSnapshot<MagnetSettings>> _mockMagnetSetting;
 

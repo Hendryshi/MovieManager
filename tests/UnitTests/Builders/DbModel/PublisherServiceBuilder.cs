@@ -7,7 +7,7 @@ using MovieManager.Core.Interfaces;
 
 namespace UnitTests.Builders
 {
-	class PublisherServiceBuilder
+	public class PublisherServiceBuilder
 	{
 		private PublisherRepo _publisherRepo;
 		private DapperContext _dbContext;

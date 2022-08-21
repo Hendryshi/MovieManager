@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MovieManager.Core.Enumerations;
 
-namespace UnitTests
+namespace FunctionalTests
 {
 	public class CompanyTests
 	{
@@ -49,11 +49,11 @@ namespace UnitTests
 		public void TesFindCompanyByName()
 		{
 			string name = "CompanyTest";
-			var company = _companyService.FinCompanyByName(name);
+			var company = _companyService.FindCompanyByName(name);
 			Assert.Equal(name, company.Name);
 
 			string url = "urlfalse";
-			company = _companyService.FinCompanyByName(name, url);
+			company = _companyService.FindCompanyByName(name, url);
 			Assert.True(company == null);
 		}
 

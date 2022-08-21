@@ -30,7 +30,7 @@ namespace MovieManager.Core.Services
 			return _companyRepo.FindById(idCompany);
 		}
 
-		public Company FinCompanyByName(string name, string url = "")
+		public Company FindCompanyByName(string name, string url = "")
 		{
 			return _companyRepo.FindByName(name, url);
 		}

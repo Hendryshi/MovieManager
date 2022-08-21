@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MovieManager.Core.Extensions;
 
-namespace UnitTests
+namespace FunctionalTests
 {
 	//TODO: Change sql to sqlLite for test
 	public class MovieTests
@@ -118,14 +118,32 @@ namespace UnitTests
 		}
 
 		[Fact]
-		public void TestStringJoin()
+		public void Test_Movie_Find_By_Criteria()
+		{
+			var dbContext = new DapperContext(new ConfigBuilder().Build());
+			var movieRelationRepo = new MovieRelationRepo(dbContext);
+			var movieHistoryRepo = new MovieHistoryRepo(dbContext);
+			var movieRepo = new MovieRepo(dbContext, movieRelationRepo, movieHistoryRepo);
+
+			DateTime dtReleaseMin = DateTime.Now.AddMonths(-2);
+
+			List<Movie> movies = movieRepo.FindByCriteria(dtReleaseMin);
+			
+			Assert.NotEmpty(movies);
+			Assert.Empty(movies.FindAll(m => m.DtRelease < dtReleaseMin));
+
+			_output.WriteLine(movies.Count.ToString());
+		}
+
+		[Fact]
+		public void Test_StringJoin()
 		{
 			List<MovieRelation> movieRelations = new List<MovieRelation>() { new MovieRelation() { IdMovie = 1, IdTyRole = JavlibRoleType.Director, IdRelation = 300 }, new MovieRelation() { IdMovie = 3, IdTyRole = JavlibRoleType.Director, IdRelation = 300 } };
 			_output.WriteLine(string.Join(",", movieRelations.Select(mr => $"({mr.IdMovie}, {mr.IdTyRole}, {mr.IdRelation})")));
 		}
 
 		[Fact]
-		public void TestTruncate()
+		public void Test_Truncate()
 		{
 			string testStr = "012";
 			_output.WriteLine(testStr.Truncate(5));
