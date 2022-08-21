@@ -48,7 +48,7 @@ namespace MovieManager.Core.Services
 		//TODO: Create a new object Report and insert it into DB
 		public void ScrapeNewReleasedMovie()
 		{
-			_logger?.LogInformation("************** Start Scraping New Released Movies Job - {Date} **************", DateTime.Now.ToString("u", DateTimeFormatInfo.InvariantInfo));
+			_logger?.LogJob("Start Scraping New Released Movies Job");
 			UrlInfo urlInfo = new UrlInfo() { EntryType = JavlibEntryType.NewRelease };
 			int pageCount = GetPageCount(urlInfo);
 
@@ -57,16 +57,24 @@ namespace MovieManager.Core.Services
 				_logger?.LogInformation($"Found {pageCount} pages. Now scanning movies on each page");
 				for(int currentPage = 1; currentPage <= pageCount; currentPage++)
 				{
-					List<Movie> lstMovieCurrentPage = ScanPageList(new UrlInfo { EntryType = JavlibEntryType.NewRelease, Page = currentPage }).GroupBy(x => x.Url).Select(x => x.First()).ToList();
+					List<Movie> lstMovieCurrentPage = ScanPageList(new UrlInfo { EntryType = JavlibEntryType.NewRelease, Page = currentPage })
+														.GroupBy(x => x.Url)
+														.Select(x => x.First()).ToList();
+
+					lstMovieCurrentPage.RemoveAll(x => x.IdMovie != 0);
+
 					if(lstMovieCurrentPage.Count > 0)
 					{
 						_logger?.LogInformation("Treating {pageCount} movies in page {currentPage}", lstMovieCurrentPage.Count, currentPage);
-						foreach(Movie movie in lstMovieCurrentPage.GroupBy(x => x.Number.ToUpper()).Select(x => x.First()))
+						foreach(Movie movie in lstMovieCurrentPage)
 						{
 							ScanMovieDetails(new UrlInfo() { EntryType = JavlibEntryType.Movie, ExactUrl = movie.Url }, movie);
 							_movieService.UpdateStatus(movie, MovieStatus.Scanned);
-							if(lstMovieCurrentPage.FindAll(c => c.Number == movie.Number).Count > 1)
-								movie.FavLevel = JavlibFavLevel.DlChineseSub;
+						}
+
+						foreach(Movie movie in lstMovieCurrentPage.GroupBy(x => x.Number.ToUpper(),
+													(key, g) => g.OrderByDescending(e => e.NbWant + e.NbOwned + e.NbWatched).First()))
+						{
 							_movieService.SaveMovie(movie, true);
 						}
 					}
@@ -74,15 +82,29 @@ namespace MovieManager.Core.Services
 			}
 			else
 				_logger?.LogWarning("Nothing found when scraping new released movie. UrlInfo: {0}", urlInfo.ToString());
+			
+			_logger?.LogJob("Scraping New Released Movies Job End");
+		}
 
-			_logger?.LogInformation("************** Scraping New Released Movies Job End - {Date} **************", DateTime.Now.ToString("u", DateTimeFormatInfo.InvariantInfo));
+		public void ScrapeMoviePoints()
+		{
+			_logger?.LogJob("Start Updating Movies Points In DB");
+			List<Movie> lstMovies = _movieService.FindMovieByCriteria(dtReleaseMin: DateTime.Today.AddDays(-_javlibSettings.UpdatePointMaxDay));
+			_logger?.LogInformation("Found {movieCount} movies in DB to update points", lstMovies.Count);
+
+			foreach(Movie movie in lstMovies)
+			{
+				ScanMovieDetails(new UrlInfo() { EntryType = JavlibEntryType.Movie, ExactUrl = movie.Url }, movie);
+				_movieService.SaveMovie(movie, true);
+			}
+
+			_logger?.LogJob("Finish Updating Movies Points In DB");
 		}
 
 		public List<Movie> ScrapreMoviesByActor(string actorName)
 		{
 			List<Movie> lstMovies = new List<Movie>();
 			Actor actor = _actorService.FindActorByName(actorName);
-
 			UrlInfo urlInfo = new UrlInfo() { EntryType = JavlibEntryType.Actress, ExactUrl = actor.Url };
 			int pageCount = GetPageCount(urlInfo);
 
@@ -92,6 +114,33 @@ namespace MovieManager.Core.Services
 				for(int currentPage = 1; currentPage <= pageCount; currentPage++)
 				{
 					List<Movie> lstMovieCurrentPage = ScanPageList(new UrlInfo { EntryType = JavlibEntryType.Actress, ExactUrl = actor.Url, Page = currentPage }).GroupBy(x => x.Url).Select(x => x.First()).ToList();
+					if(lstMovieCurrentPage.Count > 0)
+					{
+						_logger?.LogInformation("Treating {pageCount} movies in page {currentPage}", lstMovieCurrentPage.Count, currentPage);
+						foreach(Movie movie in lstMovieCurrentPage.GroupBy(x => x.Number.ToUpper()).Select(x => x.First()))
+						{
+							ScanMovieDetails(new UrlInfo() { EntryType = JavlibEntryType.Movie, ExactUrl = movie.Url }, movie);
+						}
+						lstMovies.AddRange(lstMovieCurrentPage);
+					}
+				}
+			}
+			return lstMovies;
+		}
+
+		public List<Movie> ScrapreMoviesByKeyWord(string keyword)
+		{
+			List<Movie> lstMovies = new List<Movie>();
+			
+			UrlInfo urlInfo = new UrlInfo() { EntryType = JavlibEntryType.Search, ExactUrl = $"vl_searchbyid.php?&keyword={keyword}" };
+			int pageCount = GetPageCount(urlInfo);
+
+			if(pageCount > 0)
+			{
+				_logger?.LogInformation($"Found {pageCount} pages. Now scanning movies on each page");
+				for(int currentPage = 1; currentPage <= pageCount; currentPage++)
+				{
+					List<Movie> lstMovieCurrentPage = ScanPageList(new UrlInfo { EntryType = JavlibEntryType.Search, ExactUrl = $"vl_searchbyid.php?&keyword={keyword}", Page = currentPage }).GroupBy(x => x.Url).Select(x => x.First()).ToList();
 					if(lstMovieCurrentPage.Count > 0)
 					{
 						_logger?.LogInformation("Treating {pageCount} movies in page {currentPage}", lstMovieCurrentPage.Count, currentPage);
@@ -215,7 +264,7 @@ namespace MovieManager.Core.Services
 							movie.MovieRelations.Add(new MovieRelation() { IdRelation = category.IdCategory, IdTyRole = JavlibRoleType.Category });
 							break;
 						case JavlibRoleType.Company:
-							Company company = _companyService.FinCompanyByName(name, url) ?? _companyService.SaveCompany(new Company() { Name = name, Url = url });
+							Company company = _companyService.FindCompanyByName(name, url) ?? _companyService.SaveCompany(new Company() { Name = name, Url = url });
 							movie.MovieRelations.Add(new MovieRelation() { IdRelation = company.IdCompany, IdTyRole = JavlibRoleType.Company });
 							break;
 						case JavlibRoleType.Director:
@@ -329,6 +378,10 @@ namespace MovieManager.Core.Services
 					mode = urlInfo.Mode.HasValue ? urlInfo.Mode.Value.ToString() : "";
 					page = urlInfo.Page.HasValue ? urlInfo.Page.Value.ToString() : "1";
 					result = _javlibSettings.BaseAddress + urlInfo.ExactUrl + "&mode=" + mode + "&page=" + page;
+					break;
+				case JavlibEntryType.Search:
+					page = urlInfo.Page.HasValue ? urlInfo.Page.Value.ToString() : "1";
+					result = _javlibSettings.BaseAddress + urlInfo.ExactUrl + "&page=" + page;
 					break;
 				case JavlibEntryType.Other:
 					result = urlInfo.ExactUrl;

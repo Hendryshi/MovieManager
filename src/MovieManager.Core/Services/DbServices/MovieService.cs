@@ -84,5 +84,10 @@ namespace MovieManager.Core.Services
 		{
 			return _movieRepository.LoadMoviesToDownload();
 		}
+
+		public List<Movie> FindMovieByCriteria(DateTime? dtReleaseMin = null, DateTime? dtReleaseMax = null)
+		{
+			return _movieRepository.FindByCriteria(dtReleaseMin, dtReleaseMax);
+		}
 	}
 }

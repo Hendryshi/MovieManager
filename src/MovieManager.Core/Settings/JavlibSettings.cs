@@ -14,5 +14,6 @@ namespace MovieManager.Core.Settings
 		public int DownloadTorrentPoint { get; set; }
 		public int DownloadMoviePoint { get; set; }
 		public int DownloadSubPoint { get; set; }
+		public int UpdatePointMaxDay { get; set; }
 	}
 }

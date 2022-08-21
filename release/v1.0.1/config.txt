@@ -18,3 +18,9 @@ Add:
 		}
 	}
 under "Serilog/WriteTo" element
+
+Add:
+	{
+		"UpdatePointMaxDay": 60
+	}
+under "JavlibSettings" element

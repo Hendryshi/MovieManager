@@ -9,6 +9,7 @@ namespace MovieManager.Core.Interfaces
 {
 	public interface IMovieRepo
 	{
+		List<Movie> FindByCriteria(DateTime? dtReleaseMin = null, DateTime? dtReleaseMax = null);
 		Movie FindById(int idMovie);
 		Movie FindByNumber(string movieNbr);
 		List<Movie> LoadMoviesToDownload();

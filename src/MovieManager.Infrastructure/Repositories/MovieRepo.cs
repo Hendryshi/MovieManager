@@ -88,6 +88,23 @@ namespace MovieManager.Infrastructure.Repositories
 			return lstIdMovies.Select(id => FindById(id)).ToList();
 		}
 
+		public List<Movie> FindByCriteria(DateTime? dtReleaseMin = null, DateTime? dtReleaseMax = null)
+		{
+			var sql = new StringBuilder();
+			sql.AppendLine(@"SELECT * FROM J_Movie WHERE 1=1");
+
+			if(dtReleaseMin.HasValue)
+				sql.AppendLine("AND dtRelease >= @dtReleaseMin");
+
+			if(dtReleaseMax.HasValue)
+				sql.AppendLine("AND dtRelease <= @dtReleaseMax");
+
+			var lstMovies =  db.Query<Movie>(sql.ToString(), new { dtReleaseMin = dtReleaseMin, dtReleaseMax = dtReleaseMax });
+
+			lstMovies.ForEach(m => _movieRelationRepo.LoadAllRelations(m.IdMovie));
+			return lstMovies;
+		}
+
 		public List<MovieHistory> AddHistory(Movie movie)
 		{
 			List<MovieHistory> movieHistories = new List<MovieHistory>();
@@ -125,14 +142,14 @@ namespace MovieManager.Infrastructure.Repositories
 				if(HistoryDiffHelpers.GetDifferencesFieldDate("Release Date", origin.DtRelease, movie.DtRelease, ref result))
 					movieHistories.Add(new MovieHistory() { DescHistory = result });
 
-				if(HistoryDiffHelpers.GetDifferencesFieldInteger("NbWant", origin.NbWant, movie.NbWant, ref result))
-					movieHistories.Add(new MovieHistory() { DescHistory = result });
+				//if(HistoryDiffHelpers.GetDifferencesFieldInteger("NbWant", origin.NbWant, movie.NbWant, ref result))
+				//	movieHistories.Add(new MovieHistory() { DescHistory = result });
 
-				if(HistoryDiffHelpers.GetDifferencesFieldInteger("NbWatched", origin.NbWatched, movie.NbWatched, ref result))
-					movieHistories.Add(new MovieHistory() { DescHistory = result });
+				//if(HistoryDiffHelpers.GetDifferencesFieldInteger("NbWatched", origin.NbWatched, movie.NbWatched, ref result))
+				//	movieHistories.Add(new MovieHistory() { DescHistory = result });
 
-				if(HistoryDiffHelpers.GetDifferencesFieldInteger("NbOwned", origin.NbOwned, movie.NbOwned, ref result))
-					movieHistories.Add(new MovieHistory() { DescHistory = result });
+				//if(HistoryDiffHelpers.GetDifferencesFieldInteger("NbOwned", origin.NbOwned, movie.NbOwned, ref result))
+				//	movieHistories.Add(new MovieHistory() { DescHistory = result });
 
 				if(HistoryDiffHelpers.GetDifferencesFieldInteger("Duration", origin.Duration, movie.Duration, ref result))
 					movieHistories.Add(new MovieHistory() { DescHistory = result });

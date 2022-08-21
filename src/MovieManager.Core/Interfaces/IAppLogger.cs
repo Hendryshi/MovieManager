@@ -12,6 +12,7 @@ namespace MovieManager.Core.Interfaces
 		void LogError(Exception exception, string message, params object[] args);
 		void LogInformation(string message, params object[] args);
 		void LogInformation(Exception exception, string message, params object[] args);
+		void LogJob(string message, params object[] args);
 		void LogWarning(string message, params object[] args);
 		void LogWarning(Exception exception, string message, params object[] args);
 	}

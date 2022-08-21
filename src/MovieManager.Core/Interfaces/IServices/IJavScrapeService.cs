@@ -9,5 +9,6 @@ namespace MovieManager.Core.Interfaces
 		void ScanMovieDetails(UrlInfo urlInfo, Movie movie);
 		List<Movie> ScanPageList(UrlInfo urlInfo);
 		void ScrapeNewReleasedMovie();
+		List<Movie> ScrapreMoviesByKeyWord(string keyword);
 	}
 }

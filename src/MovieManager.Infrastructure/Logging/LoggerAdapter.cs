@@ -1,6 +1,7 @@
 ﻿using MovieManager.Core.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Globalization;
 
 namespace MovieManager.Infrastructure.Logging
 {
@@ -41,6 +42,13 @@ namespace MovieManager.Infrastructure.Logging
         public void LogError(Exception exception, string message, params object[] args)
         {
             _logger.LogError(exception, message, args);
+        }
+
+        public void LogJob( string message, params object[] args)
+		{
+            _logger.LogInformation("*****************************************************************************************************");
+            _logger.LogInformation("************** {message} - {Date} **************", message, DateTime.Now.ToString("u", DateTimeFormatInfo.InvariantInfo));
+            _logger.LogInformation("*****************************************************************************************************");
         }
     }
 }
