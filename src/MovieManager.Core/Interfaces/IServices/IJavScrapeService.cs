@@ -5,6 +5,7 @@ namespace MovieManager.Core.Interfaces
 {
 	public interface IJavScrapeService
 	{
+		void DailyScrape();
 		int GetPageCount(UrlInfo urlInfo);
 		void ScanMovieDetails(UrlInfo urlInfo, Movie movie);
 		List<Movie> ScanPageList(UrlInfo urlInfo);

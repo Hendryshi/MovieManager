@@ -19,6 +19,8 @@ namespace MovieManager.Infrastructure
 			services.Configure<MagnetSettings>(_config.GetSection("MagnetSettings"));
 			services.Configure<QbittorrentSettings>(_config.GetSection("QbittorrentSettings"));
 			services.Configure<LocalFileSettings>(_config.GetSection("LocalFileSettings"));
+			services.Configure<EmailSettings>(_config.GetSection("EmailSettings"));
+			services.Configure<ReportSettings>(_config.GetSection("ScrapeReportSettings"));
 
 			services.AddScoped<DbContext.DapperContext>();
 			services.AddScoped(typeof(IAppLogger<>), typeof(Logging.LoggerAdapter<>));

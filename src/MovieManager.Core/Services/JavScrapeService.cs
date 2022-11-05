@@ -48,6 +48,12 @@ namespace MovieManager.Core.Services
 			_reportService = reportService;
 		}
 
+		public void DailyScrape()
+		{
+			ScrapeNewReleasedMovie();
+			ScrapeMoviePoints();
+		}
+
 		//TODO: Create a new object Report and insert it into DB
 		public void ScrapeNewReleasedMovie()
 		{
@@ -258,6 +264,8 @@ namespace MovieManager.Core.Services
 							movie.FavLevel = JavlibFavLevel.DlMovie;
 						else if(wantLevel.Value >= _javlibSettings.DownloadTorrentPoint && movie.FavLevel != JavlibFavLevel.DlChineseSub && movie.FavLevel != JavlibFavLevel.DlMovie)
 							movie.FavLevel = JavlibFavLevel.DlTorrent;
+						else
+							movie.FavLevel = JavlibFavLevel.NotInterest;
 					}
 				}
 				else

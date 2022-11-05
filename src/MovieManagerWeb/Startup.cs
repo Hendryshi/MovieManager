@@ -118,7 +118,7 @@ namespace MovieManagerWeb
 					switch(hangfireJob)
 					{
 						case HangfireJob.ScrapeNewReleasedMovie:
-							recurringJobManager.AddOrUpdate(jobName, () => serviceProvider.GetService<IJavScrapeService>().ScrapeNewReleasedMovie(), jobCron);
+							recurringJobManager.AddOrUpdate(jobName, () => serviceProvider.GetService<IJavScrapeService>().DailyScrape(), jobCron);
 							break;
 						case HangfireJob.ScrapeMovieMagnet:
 							recurringJobManager.AddOrUpdate(jobName, () => serviceProvider.GetService<IMagnetScrapeService>().DailyDownloadMovieMagnet(), jobCron);
