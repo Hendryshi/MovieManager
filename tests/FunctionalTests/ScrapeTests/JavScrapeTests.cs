@@ -29,6 +29,7 @@ namespace FunctionalTests
 		private readonly ActorService _actorService;
 		private readonly PublisherService _publisherService;
 		private readonly JavScrapeService _javScrapeService;
+		private readonly ReportService _reportService;
 
 		public JavScrapeTests(ITestOutputHelper output)
 		{
@@ -43,8 +44,9 @@ namespace FunctionalTests
 			_directorService = new DirectorServiceBuilder().Build();
 			_actorService = new ActorServiceBuilder().Build();
 			_publisherService = new PublisherServiceBuilder().Build();
-			
-			_javScrapeService = new JavScrapeService(_logger, _javlibSettings, _movieService, _actorService, _categoryService, _companyService, _directorService, _publisherService, _htmlService);
+			_reportService = new ReportServiceBuilder().Build();
+
+			_javScrapeService = new JavScrapeService(_logger, _javlibSettings, _movieService, _actorService, _categoryService, _companyService, _directorService, _publisherService, _htmlService, _reportService);
 		}
 
 		[Fact]
@@ -114,7 +116,7 @@ namespace FunctionalTests
 		}
 
 		[Fact]
-		public void TestScrapeNewReleasedMovie()
+		public void Test_Scrape_NewReleased_Movie()
 		{
 			_javScrapeService.ScrapeNewReleasedMovie();
 		}
@@ -124,7 +126,7 @@ namespace FunctionalTests
 		{	
 			_javScrapeService.ScrapeMoviePoints();
 			
-			List<Movie> moviesUpdated = _movieService.FindMovieByCriteria(dtReleaseMin: DateTime.Today.AddDays(-6));
+			List<Movie> moviesUpdated = _movieService.FindMovieByCriteria(dtReleaseMin: DateTime.Today.AddDays(-10));
 			
 			Assert.Empty(moviesUpdated.FindAll(m => m.DtUpdate < DateTime.Today));
 		}

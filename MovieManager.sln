@@ -30,11 +30,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "v1.0.1", "v1.0.1", "{FFB5F8E2-BC15-40BD-B509-6947EF16A37E}"
 	ProjectSection(SolutionItems) = preProject
 		release\v1.0.1\config.txt = release\v1.0.1\config.txt
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{385CFEAA-9022-47DA-AB1B-DBD68EDB4C07}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
+		release\v1.0.1\updates.sql = release\v1.0.1\updates.sql
 	EndProjectSection
 EndProject
 Global

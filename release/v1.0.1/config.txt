@@ -24,3 +24,20 @@ Add:
 		"UpdatePointMaxDay": 60
 	}
 under "JavlibSettings" element
+
+Add:
+	"EmailSettings": {
+        "fromEmail": "yejia.shi@hotmail.com",
+        "enableSsl": "true",
+        "mailServer": "smtp-mail.outlook.com",
+        "networkCredentialuserName": "yejia.shi@hotmail.com",
+        "networkCredentialpassword": "*******",
+        "smtpPort": 587
+    },
+    "ScrapeReportSettings": {
+        "reportEmail": "yejia.shi@hotmail.com",
+        "ScrapeReportSubject": "Daily Scrape Movie Report"
+    }
+
+Change:
+	RecurringJobs: SendScrapeReport:0 9 * * *

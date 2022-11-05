@@ -21,31 +21,33 @@ namespace MovieManager.Core.Services
 		private readonly IAppLogger<DownloadService> _logger;
 		private readonly IMovieService _movieService;
 		private readonly IMovieMagnetService _movieMagnetService;
-		//private readonly MagnetSettings _magnetSettings;
 		private readonly IQbittorrentService _qbittorrentService;
 		private readonly ILocalFileService _localFileService;
+		private readonly IReportService _reportService;
 
 		public DownloadService(IAppLogger<DownloadService> logger, 
-			IMovieService movieService, IMovieMagnetService movieMagnetService, IQbittorrentService qbittorrentService, ILocalFileService localFileService)
+			IMovieService movieService, IMovieMagnetService movieMagnetService, IQbittorrentService qbittorrentService, ILocalFileService localFileService, IReportService reportService)
 		{
 			_logger = logger;
-			//_magnetSettings = magnetSettings.Value;
 			_movieService = movieService;
 			_movieMagnetService = movieMagnetService;
 			_qbittorrentService = qbittorrentService;
 			_localFileService = localFileService;
+			_reportService = reportService;
 		}
 
+		//TODO: Simplify this fonction, it's too difficult to do the unit test
 		public void MonitorMovieDownload()
 		{
 			try
 			{
-				_logger.LogInformation("************** Start Monitoring Movie Download Job - {Date} **************", DateTime.Now.ToString("u", DateTimeFormatInfo.InvariantInfo));
+				_logger?.LogJob("Start Monitoring Movie Download Job");
 				//Check every magnet in status downloading. If not found in qbittorrent or status = downloaded, do fileService
 				int nbMovieAdded = 0;
 				List<Task> lstGenerateMovieFileTask = new List<Task>();
 				List<Task> lstDeleteTorrentTask = new List<Task>();
 				List<Task> lstAddTorrentTask = new List<Task>();
+				
 
 				foreach(MovieMagnet magnet in _movieMagnetService.FindMovieMagnetByStatus(MagnetStatus.Downloading))
 				{
@@ -75,7 +77,7 @@ namespace MovieManager.Core.Services
 
 				Task.WaitAll(lstDeleteTorrentTask.ToArray());
 				Task.WaitAll(lstGenerateMovieFileTask.ToArray());
-
+				
 				//Send torrent to qbittorrent for the top nbFinished
 				List<Movie> lstMoviesToDownload = _movieService.LoadMoviesToDownload();
 				if(lstMoviesToDownload.Count > 0)
@@ -105,7 +107,7 @@ namespace MovieManager.Core.Services
 			}
 			finally
 			{
-				_logger?.LogInformation("************** Monitoring Movie Download Job End - {Date} **************", DateTime.Now.ToString("u", DateTimeFormatInfo.InvariantInfo));
+				_logger?.LogJob("Monitoring Movie Download Job End");
 			}
 		}
 
@@ -135,6 +137,11 @@ namespace MovieManager.Core.Services
 				Movie movie = _movieService.FindMovieById(magnet.IdMovie);
 				_movieService.UpdateStatus(movie, magnet.HasSub ? MovieStatus.Finished : MovieStatus.Downloaded);
 				_movieService.SaveMovie(movie);
+
+				//TODO: Create a new function in report service named reportservice.addnumber
+				ScrapeReport report = _reportService.FindScrapeReportByDate() ?? new ScrapeReport();
+				report.NbDownload++;
+				_reportService.SaveScrapeReport(report);
 			}
 			catch(Exception ex)
 			{

@@ -25,6 +25,7 @@ namespace MovieManager.Infrastructure
 			services.AddTransient<IHtmlService, Services.HtmlService>();
 			services.AddTransient<IQbittorrentService, Services.QbittorrentService>();
 			services.AddTransient<ILocalFileService, Services.LocalFileService>();
+			services.AddTransient<IEmailSender, Services.EmailSender>();
 			services.AddTransient<IMovieRelationRepo, Repositories.MovieRelationRepo>();
 			services.AddTransient<IMovieRepo, Repositories.MovieRepo>();
 			services.AddTransient<IActorRepo, Repositories.ActorRepo>();
@@ -34,6 +35,7 @@ namespace MovieManager.Infrastructure
 			services.AddTransient<IPublisherRepo, Repositories.PublisherRepo>();
 			services.AddTransient<IMovieMagnetRepo, Repositories.MovieMagnetRepo>();
 			services.AddTransient<IMovieHistoryRepo, Repositories.MovieHistoryRepo>();
+			services.AddTransient<IScrapeReportRepo, Repositories.ScrapeReportRepo>();
 			return services;
 		}
 	}

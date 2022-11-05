@@ -10,6 +10,7 @@ namespace MovieManager.Core.Enumerations
 	{
 		ScrapeNewReleasedMovie = 1,
 		ScrapeMovieMagnet,
-		MonitorMovieDownload
+		MonitorMovieDownload,
+		SendScrapeReport
 	}
 }

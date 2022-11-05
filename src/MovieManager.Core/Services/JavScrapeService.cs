@@ -24,6 +24,7 @@ namespace MovieManager.Core.Services
 		private readonly ICompanyService _companyService;
 		private readonly IDirectorService _directorService;
 		private readonly IPublisherService _publisherService;
+		public readonly IReportService _reportService;
 
 		public JavScrapeService(IAppLogger<JavScrapeService> logger, IOptionsSnapshot<JavlibSettings> javlibSettings,
 			IMovieService movieService, 
@@ -32,7 +33,8 @@ namespace MovieManager.Core.Services
 			ICompanyService companyService,
 			IDirectorService directorService,
 			IPublisherService publisherService,
-			IHtmlService htmlService)
+			IHtmlService htmlService,
+			IReportService reportService)
 		{
 			_logger = logger;
 			_javlibSettings = javlibSettings.Value;
@@ -43,6 +45,7 @@ namespace MovieManager.Core.Services
 			_directorService = directorService;
 			_publisherService = publisherService;
 			_htmlService = htmlService;
+			_reportService = reportService;
 		}
 
 		//TODO: Create a new object Report and insert it into DB
@@ -55,30 +58,45 @@ namespace MovieManager.Core.Services
 			if(pageCount > 0)
 			{
 				_logger?.LogInformation($"Found {pageCount} pages. Now scanning movies on each page");
+				ScrapeReport report = _reportService.FindScrapeReportByDate() ?? new ScrapeReport();
+
 				for(int currentPage = 1; currentPage <= pageCount; currentPage++)
 				{
-					List<Movie> lstMovieCurrentPage = ScanPageList(new UrlInfo { EntryType = JavlibEntryType.NewRelease, Page = currentPage })
-														.GroupBy(x => x.Url)
-														.Select(x => x.First()).ToList();
-
-					lstMovieCurrentPage.RemoveAll(x => x.IdMovie != 0);
-
-					if(lstMovieCurrentPage.Count > 0)
+					try
 					{
-						_logger?.LogInformation("Treating {pageCount} movies in page {currentPage}", lstMovieCurrentPage.Count, currentPage);
-						foreach(Movie movie in lstMovieCurrentPage)
-						{
-							ScanMovieDetails(new UrlInfo() { EntryType = JavlibEntryType.Movie, ExactUrl = movie.Url }, movie);
-							_movieService.UpdateStatus(movie, MovieStatus.Scanned);
-						}
+						List<Movie> lstMovieCurrentPage = ScanPageList(new UrlInfo { EntryType = JavlibEntryType.NewRelease, Page = currentPage })
+															.GroupBy(x => x.Url)
+															.Select(x => x.First()).ToList();
 
-						foreach(Movie movie in lstMovieCurrentPage.GroupBy(x => x.Number.ToUpper(),
-													(key, g) => g.OrderByDescending(e => e.NbWant + e.NbOwned + e.NbWatched).First()))
+						lstMovieCurrentPage.RemoveAll(x => x.IdMovie != 0);
+
+						if(lstMovieCurrentPage.Count > 0)
 						{
-							_movieService.SaveMovie(movie, true);
+							_logger?.LogInformation("Treating {pageCount} movies in page {currentPage}", lstMovieCurrentPage.Count, currentPage);
+							foreach(Movie movie in lstMovieCurrentPage)
+							{
+								ScanMovieDetails(new UrlInfo() { EntryType = JavlibEntryType.Movie, ExactUrl = movie.Url }, movie);
+								_movieService.UpdateStatus(movie, MovieStatus.Scanned);
+							}
+
+							foreach(Movie movie in lstMovieCurrentPage.GroupBy(x => x.Number.ToUpper(),
+														(key, g) => g.OrderByDescending(e => e.NbWant + e.NbOwned + e.NbWatched).First()))
+							{
+								report.NbReleased++;
+								if(movie.FavLevel >= JavlibFavLevel.DlMovie)
+									report.NbInterest++;
+
+								_movieService.SaveMovie(movie, true);
+							}
 						}
 					}
+					catch(Exception ex)
+					{
+						_logger?.LogError(ex, "Error occurred when scraping new released movies from url: {0}", urlInfo.ToString());
+					}
 				}
+
+				_reportService.SaveScrapeReport(report);
 			}
 			else
 				_logger?.LogWarning("Nothing found when scraping new released movie. UrlInfo: {0}", urlInfo.ToString());
@@ -92,10 +110,20 @@ namespace MovieManager.Core.Services
 			List<Movie> lstMovies = _movieService.FindMovieByCriteria(dtReleaseMin: DateTime.Today.AddDays(-_javlibSettings.UpdatePointMaxDay));
 			_logger?.LogInformation("Found {movieCount} movies in DB to update points", lstMovies.Count);
 
-			foreach(Movie movie in lstMovies)
+			if(lstMovies.Count > 0)
 			{
-				ScanMovieDetails(new UrlInfo() { EntryType = JavlibEntryType.Movie, ExactUrl = movie.Url }, movie);
-				_movieService.SaveMovie(movie, true);
+				ScrapeReport report = _reportService.FindScrapeReportByDate() ?? new ScrapeReport();
+
+				foreach(Movie movie in lstMovies)
+				{
+					short favLevel = (short)movie.FavLevel;
+					ScanMovieDetails(new UrlInfo() { EntryType = JavlibEntryType.Movie, ExactUrl = movie.Url }, movie);
+					_movieService.SaveMovie(movie, false);
+
+					if(movie.FavLevel >= JavlibFavLevel.DlMovie && favLevel < (short)JavlibFavLevel.DlMovie)
+						report.NbInterest++;
+				}
+				_reportService.SaveScrapeReport(report);
 			}
 
 			_logger?.LogJob("Finish Updating Movies Points In DB");
@@ -162,6 +190,7 @@ namespace MovieManager.Core.Services
 			{
 				string requestUrl = GetJavLibraryUrl(urlInfo);
 				HtmlDocument htmlDocument = TryGetHtmlDocument(requestUrl);
+
 				if(htmlDocument != null)
 				{
 					if(movie.IdMovie == 0)
@@ -230,7 +259,6 @@ namespace MovieManager.Core.Services
 						else if(wantLevel.Value >= _javlibSettings.DownloadTorrentPoint && movie.FavLevel != JavlibFavLevel.DlChineseSub && movie.FavLevel != JavlibFavLevel.DlMovie)
 							movie.FavLevel = JavlibFavLevel.DlTorrent;
 					}
-
 				}
 				else
 					_logger?.LogWarning("Nothing found when scanning movie details. UrlInfo: {urlInfo}", urlInfo.ToString());
@@ -286,6 +314,7 @@ namespace MovieManager.Core.Services
 			int lastPage = 0;
 			string requestUrl = GetJavLibraryUrl(urlInfo);
 			HtmlDocument htmlDocument = TryGetHtmlDocument(requestUrl);
+
 			if(htmlDocument != null)
 			{
 				var lastPagePath = "//a[@class='page last']";
@@ -310,6 +339,8 @@ namespace MovieManager.Core.Services
 						lastPage = 1;
 				}
 			}
+			else
+				_logger.LogError("Nothing found when requesting url: {requestUrl}", requestUrl);
 
 			return lastPage;
 		}
@@ -351,6 +382,8 @@ namespace MovieManager.Core.Services
 						}
 					}
 				}
+				else
+					_logger.LogError("Nothing found when requesting page: {pageUrl}", pageUrl);
 			}
 			catch(Exception ex)
 			{

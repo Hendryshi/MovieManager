@@ -29,6 +29,7 @@ namespace UnitTests
 		private readonly ActorService _actorService;
 		private readonly PublisherService _publisherService;
 		private readonly JavScrapeService _javScrapeService;
+		private readonly ReportService _reportService;
 
 		public JavScrapeTests(ITestOutputHelper output)
 		{
@@ -43,8 +44,9 @@ namespace UnitTests
 			_directorService = new DirectorServiceBuilder().Build();
 			_actorService = new ActorServiceBuilder().Build();
 			_publisherService = new PublisherServiceBuilder().Build();
+			_reportService = new ReportServiceBuilder().Build();
 			
-			_javScrapeService = new JavScrapeService(_logger, _javlibSettings, _movieService, _actorService, _categoryService, _companyService, _directorService, _publisherService, _htmlService);
+			_javScrapeService = new JavScrapeService(_logger, _javlibSettings, _movieService, _actorService, _categoryService, _companyService, _directorService, _publisherService, _htmlService, _reportService);
 		}
 
 		[Fact]
@@ -123,7 +125,7 @@ namespace UnitTests
 		[Fact]
 		public void TestScrapeMoviesByActor()
 		{
-			string name = "‚è¥Â§¢§§§Í";
+			string name = "–°ª®§Œ§Û";
 			List<Movie> movies = _javScrapeService.ScrapreMoviesByActor(name);
 
 			List<Movie> results = movies.OrderByDescending(x => x.NbOwned + x.NbWant + x.NbWatched).Take(20).ToList();
@@ -133,13 +135,11 @@ namespace UnitTests
 		[Fact]
 		public void TestScrapeMoviesByKeyWord()
 		{
-			string name = "huntb";
+			string name = "STAR";
 			List<Movie> movies = _javScrapeService.ScrapreMoviesByKeyWord(name);
 
-			List<Movie> results = movies.OrderByDescending(x => x.NbOwned + x.NbWant + x.NbWatched).Take(20).ToList();
-			//results.ForEach(x => _output.WriteLine($"{x.Number}: {x.NbOwned + x.NbWant + x.NbWatched}"));
-
-
+			List<Movie> results = movies.OrderByDescending(x => x.NbOwned + x.NbWant + x.NbWatched).Take(30).ToList();
+			results.ForEach(x => _output.WriteLine($"{x.Number}: {x.NbOwned + x.NbWant + x.NbWatched}"));
 		}
 	}
 }

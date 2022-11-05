@@ -51,7 +51,7 @@ namespace MovieManager.Infrastructure.Services
 				}
 				catch(Exception ex)
 				{
-					_logger?.LogError(ex, $"Error when requesting page: {requestUrl}");
+					_logger?.LogWarning(ex, $"Error when requesting page: {requestUrl}");
 					retry++;
 					if(retry <= maxRetry)
 					{

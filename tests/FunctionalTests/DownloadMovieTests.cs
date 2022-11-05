@@ -27,7 +27,8 @@ namespace FunctionalTests
 			_movieMagnetService = new MovieMagServiceBuilder().Build();
 			_qbittorrentService = new QbittorrentServiceBuilder().Build();
 			_localFileService = new LocalFileServiceBuilder().Build();
-			_downloadService = new DownloadService(_logger, _movieService, _movieMagnetService, _qbittorrentService, _localFileService);
+			//_downloadService = new DownloadService(_logger, _movieService, _movieMagnetService, _qbittorrentService, _localFileService);
+			
 		}
 
 		[Fact]

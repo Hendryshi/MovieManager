@@ -35,10 +35,10 @@ namespace MovieManager.Core.Services
 
 		public void DailyDownloadMovieMagnet()
 		{
-			_logger.LogInformation("************** Start Daily Movie Magnet Download Job - {Date} **************", DateTime.Now.ToString("u", DateTimeFormatInfo.InvariantInfo));
+			_logger?.LogJob("Start Daily Movie Magnet Download Job");
 			List<Movie> movies = _movieService.LoadMoviesToScrapeMagnet();
 			movies.ForEach(m => ScrapeMovieMagnet(m));
-			_logger.LogInformation("************** Daily Movie Magnet Download Job End - {Date} **************", DateTime.Now.ToString("u", DateTimeFormatInfo.InvariantInfo));
+			_logger?.LogJob("Daily Movie Magnet Download Job End");
 		}
 
 		

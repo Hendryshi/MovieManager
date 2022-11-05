@@ -126,6 +126,9 @@ namespace MovieManagerWeb
 						case HangfireJob.MonitorMovieDownload:
 							recurringJobManager.AddOrUpdate(jobName, () => serviceProvider.GetService<IDownloadService>().MonitorMovieDownload(), jobCron);
 							break;
+						case HangfireJob.SendScrapeReport:
+							recurringJobManager.AddOrUpdate(jobName, () => serviceProvider.GetService<IReportService>().SendScrapeReport(null), jobCron);
+							break;
 					}
 				}
 			}

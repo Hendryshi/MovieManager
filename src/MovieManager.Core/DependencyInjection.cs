@@ -19,6 +19,8 @@ namespace MovieManager.Core
 			services.AddTransient<IDirectorService, Services.DirectorService>();
 			services.AddTransient<IPublisherService, Services.PublisherService>();
 			services.AddTransient<IMovieMagnetService, Services.MovieMagnetService>();
+			services.AddTransient<IReportService, Services.ReportService>();
+
 			services.AddTransient<IJavScrapeService, Services.JavScrapeService>();
 			services.AddTransient<IMagnetScrapeService, Services.MagnetScrapeService>();
 			services.AddTransient<IDownloadService, Services.DownloadService>();
